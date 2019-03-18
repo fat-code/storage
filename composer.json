@@ -1,0 +1,39 @@
+{
+  "name": "fatcode/storage",
+  "description": "",
+  "keywords": [
+    "storage",
+    "mongo",
+    "unit of work",
+    "odm",
+    "php"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Dawid <krac> Kraczkowski",
+      "email": "dawid.kraczkowski@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.2.0",
+    "ext-mongodb": "*",
+    "ext-bcmath": "*",
+    "ext-mbstring" : "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": ">=8.0",
+    "mockery/mockery": ">=1.2",
+    "fzaninotto/faker": ">=1.8"
+  },
+  "autoload": {
+    "psr-4": {
+      "FatCode\\Storage\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "FatCode\\Tests\\Storage\\": "tests/"
+    }
+  }
+}
