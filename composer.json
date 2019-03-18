@@ -1,6 +1,7 @@
 {
   "name": "fatcode/storage",
   "description": "",
+  "version": "dev-master",
   "keywords": [
     "storage",
     "mongo",
