@@ -2,54 +2,63 @@
 
 namespace FatCode\Tests\Storage\Driver\MongoDB\Command\Operation;
 
+use FatCode\Storage\Driver\MongoDb\Command\Changeset;
+use FatCode\Storage\Driver\MongoDb\Command\Find;
+use FatCode\Storage\Driver\MongoDb\Command\Operation\AddToSet;
+use FatCode\Storage\Driver\MongoDb\Command\Operation\Limit;
+use FatCode\Storage\Driver\MongoDb\Command\Update;
 use FatCode\Tests\Storage\Driver\MongoDB\Command\CommandTest;
-use MongoDB\BSON\ObjectId;
 use PHPUnit\Framework\TestCase;
-use FatCode\Storage\Driver\MongoDB\Command\Changeset;
-use FatCode\Storage\Driver\MongoDB\Command\Find;
-use FatCode\Storage\Driver\MongoDB\Command\Insert;
-use FatCode\Storage\Driver\MongoDB\Command\Operation\AddToSet;
-use FatCode\Storage\Driver\MongoDB\Command\Operation\ConstrainMaximum;
-use FatCode\Storage\Driver\MongoDB\Command\Operation\ConstrainMinimum;
-use FatCode\Storage\Driver\MongoDB\Command\Operation\Delete;
-use FatCode\Storage\Driver\MongoDB\Command\Operation\Increment;
-use FatCode\Storage\Driver\MongoDB\Command\Update;
 
 final class AddToSetTest extends TestCase
 {
     use CommandTest;
 
-    public function testAddSingleToSet(): void
+    public function testAddToSetUsingSimpleInterface() : void
     {
-        $john = $this->createJohn();
         $connection = $this->getConnection();
+        $user = $this->generateUser(['favourite_colors' => ['red', 'green']]);
 
-        $changeset = Changeset::forId(
-            $john['_id'],
+        $connection->users->forId(
+            $user['_id'],
             new AddToSet('favourite_colors', 'blue')
         );
 
-        $updateJohn = new Update($this->getUsersCollection(), $changeset);
-        $connection->execute($updateJohn);
-
-        $updated = $connection->execute(Find::byId($this->getUsersCollection(), $john['_id']))->current();
+        $updated = $connection->users->get($user['_id']);
         self::assertSame(['red', 'green', 'blue'], $updated['favourite_colors']);
     }
 
-    public function testAddMultipleToSet(): void
+    public function testAddToSet() : void
     {
-        $john = $this->createJohn();
         $connection = $this->getConnection();
+        $user = $this->generateUser(['favourite_colors' => ['red', 'green']]);
 
-        $changeset = Changeset::forId(
-            $john['_id'],
-            new AddToSet('favourite_colors', 'blue', 'yellow', 'green')
+        $changeset = new Changeset(
+            ['_id' => $user['_id']],
+            new AddToSet('favourite_colors', 'blue')
+        );
+        $update = new Update('users', $changeset);
+        $connection->execute($update);
+
+        $updated = $connection->execute(new Find(
+            'users',
+            ['_id' => $user['_id']],
+            new Limit(1)
+        ))->toArray()[0];
+        self::assertSame(['red', 'green', 'blue'], $updated['favourite_colors']);
+    }
+
+    public function testAddMultipleToSet() : void
+    {
+        $connection = $this->getConnection();
+        $user = $this->generateUser(['favourite_colors' => ['red', 'green']]);
+
+        $connection->users->forId(
+            $user['_id'],
+            new AddToSet('favourite_colors', 'blue', 'yellow')
         );
 
-        $updateJohn = new Update($this->getUsersCollection(), $changeset);
-        $connection->execute($updateJohn);
-
-        $updated = $connection->execute(Find::byId($this->getUsersCollection(), $john['_id']))->current();
+        $updated = $connection->users->get($user['_id']);
         self::assertSame(['red', 'green', 'blue', 'yellow'], $updated['favourite_colors']);
     }
 }

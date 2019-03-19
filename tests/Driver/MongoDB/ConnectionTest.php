@@ -2,22 +2,22 @@
 
 namespace FatCode\Tests\Storage\Driver\MongoDB;
 
-use FatCode\Storage\Driver\MongoDB\Command\CreateCollection;
-use FatCode\Storage\Driver\MongoDB\Command\DropCollection;
-use FatCode\Storage\Driver\MongoDB\Connection;
-use FatCode\Storage\Driver\MongoDB\ConnectionOptions;
+use FatCode\Storage\Driver\MongoDb\Command\CreateCollection;
+use FatCode\Storage\Driver\MongoDb\Command\DropCollection;
+use FatCode\Storage\Driver\MongoDb\MongoConnection;
+use FatCode\Storage\Driver\MongoDb\MongoConnectionOptions;
 use PHPUnit\Framework\TestCase;
 
 final class ConnectionTest extends TestCase
 {
     public function testInstantiate(): void
     {
-        self::assertInstanceOf(Connection::class, new Connection('localhost', new ConnectionOptions('test')));
+        self::assertInstanceOf(MongoConnection::class, new MongoConnection('localhost', new MongoConnectionOptions('test')));
     }
 
     public function testConnect(): void
     {
-        $connection = new Connection('localhost', new ConnectionOptions('test'));
+        $connection = new MongoConnection('localhost', new MongoConnectionOptions('test'));
         self::assertFalse($connection->isConnected());
         $connection->connect();
         self::assertTrue($connection->isConnected());
@@ -25,7 +25,7 @@ final class ConnectionTest extends TestCase
 
     public function testClose(): void
     {
-        $connection = new Connection('localhost', new ConnectionOptions('test'));
+        $connection = new MongoConnection('localhost', new MongoConnectionOptions('test'));
         $connection->connect();
         self::assertTrue($connection->isConnected());
         $connection->close();
@@ -34,7 +34,7 @@ final class ConnectionTest extends TestCase
 
     public function testExecute(): void
     {
-        $connection = new Connection('localhost', new ConnectionOptions('test'));
+        $connection = new MongoConnection('localhost', new MongoConnectionOptions('test'));
 
         $cursor = $connection->execute(new CreateCollection('example_collection'));
         self::assertArrayHasKey('ok', $cursor->current());

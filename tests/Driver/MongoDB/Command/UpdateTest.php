@@ -4,15 +4,15 @@ namespace FatCode\Tests\Storage\Driver\MongoDB\Command;
 
 use MongoDB\BSON\ObjectId;
 use PHPUnit\Framework\TestCase;
-use FatCode\Storage\Driver\MongoDB\Command\Changeset;
-use FatCode\Storage\Driver\MongoDB\Command\Find;
-use FatCode\Storage\Driver\MongoDB\Command\Insert;
-use FatCode\Storage\Driver\MongoDB\Command\Operation\AddToSet;
-use FatCode\Storage\Driver\MongoDB\Command\Operation\ConstrainMaximum;
-use FatCode\Storage\Driver\MongoDB\Command\Operation\ConstrainMinimum;
-use FatCode\Storage\Driver\MongoDB\Command\Operation\Delete;
-use FatCode\Storage\Driver\MongoDB\Command\Operation\Increment;
-use FatCode\Storage\Driver\MongoDB\Command\Update;
+use FatCode\Storage\Driver\MongoDb\Command\Changeset;
+use FatCode\Storage\Driver\MongoDb\Command\Find;
+use FatCode\Storage\Driver\MongoDb\Command\Insert;
+use FatCode\Storage\Driver\MongoDb\Command\Operation\AddToSet;
+use FatCode\Storage\Driver\MongoDb\Command\Operation\ConstrainMaximum;
+use FatCode\Storage\Driver\MongoDb\Command\Operation\ConstrainMinimum;
+use FatCode\Storage\Driver\MongoDb\Command\Operation\Delete;
+use FatCode\Storage\Driver\MongoDb\Command\Operation\Increment;
+use FatCode\Storage\Driver\MongoDb\Command\Update;
 
 final class UpdateTest extends TestCase
 {
@@ -55,40 +55,6 @@ final class UpdateTest extends TestCase
             self::assertArrayHasKey('updated', $user);
             self::assertTrue($user['updated']);
         }
-    }
-
-    public function testAddSingleToSet(): void
-    {
-        $john = $this->createJohn();
-        $connection = $this->getConnection();
-
-        $changeset = Changeset::forId(
-            $john['_id'],
-            new AddToSet('favourite_colors', 'blue')
-        );
-
-        $updateJohn = new Update($this->getUsersCollection(), $changeset);
-        $connection->execute($updateJohn);
-
-        $updated = $connection->execute(Find::byId($this->getUsersCollection(), $john['_id']))->current();
-        self::assertSame(['red', 'green', 'blue'], $updated['favourite_colors']);
-    }
-
-    public function testAddMultipleToSet(): void
-    {
-        $john = $this->createJohn();
-        $connection = $this->getConnection();
-
-        $changeset = Changeset::forId(
-            $john['_id'],
-            new AddToSet('favourite_colors', 'blue', 'yellow', 'green')
-        );
-
-        $updateJohn = new Update($this->getUsersCollection(), $changeset);
-        $connection->execute($updateJohn);
-
-        $updated = $connection->execute(Find::byId($this->getUsersCollection(), $john['_id']))->current();
-        self::assertSame(['red', 'green', 'blue', 'yellow'], $updated['favourite_colors']);
     }
 
     public function testDeleteSingleField(): void
@@ -207,27 +173,4 @@ final class UpdateTest extends TestCase
         self::assertSame(50.0, $updated['wallet']['amount']);
     }
 
-    private function createJohn(): array
-    {
-        $connection = $this->getConnection();
-        $john = [
-            '_id' => new ObjectId(),
-            'name' => [
-                'first' => 'John',
-                'last' => 'Doe',
-            ],
-            'number' => 10,
-            'language' => 'pl',
-            'eye_color' => 'brown',
-            'wallet' => [
-                'currency' => 'EUR',
-                'amount' => 20.00,
-            ],
-            'favourite_colors' => ['red', 'green']
-        ];
-        $createJohn = new Insert($this->getUsersCollection(), $john);
-        $connection->execute($createJohn);
-
-        return $john;
-    }
 }

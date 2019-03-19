@@ -4,29 +4,29 @@ namespace FatCode\Tests\Storage\Driver\MongoDB\Command;
 
 use Faker\Factory as Faker;
 use MongoDB\BSON\ObjectId;
-use FatCode\Storage\Driver\MongoDB\Command\CreateCollection;
-use FatCode\Storage\Driver\MongoDB\Command\DropCollection;
-use FatCode\Storage\Driver\MongoDB\Command\Insert;
-use FatCode\Storage\Driver\MongoDB\Connection;
-use FatCode\Storage\Driver\MongoDB\ConnectionOptions;
+use FatCode\Storage\Driver\MongoDb\Command\CreateCollection;
+use FatCode\Storage\Driver\MongoDb\Command\DropCollection;
+use FatCode\Storage\Driver\MongoDb\Command\Insert;
+use FatCode\Storage\Driver\MongoDb\MongoConnection;
+use FatCode\Storage\Driver\MongoDb\MongoConnectionOptions;
 use Throwable;
 
 trait CommandTest
 {
-    /** @var Connection */
+    /** @var MongoConnection */
     private $connection;
 
-    private function getConnection(): Connection
+    private function getConnection() : MongoConnection
     {
         if ($this->connection !== null) {
             return $this->connection;
         }
 
-        $this->connection = new Connection('localhost', new ConnectionOptions('test'));
+        $this->connection = new MongoConnection('localhost', new MongoConnectionOptions('test'));
         return $this->connection;
     }
 
-    private function createCollection(string $name): void
+    private function createCollection(string $name) : void
     {
         $connection = $this->getConnection();
         // Setup collection
@@ -38,49 +38,15 @@ trait CommandTest
         $connection->execute(new CreateCollection($name));
     }
 
-    private function getUsersCollection(): string
-    {
-        return 'users';
-    }
-
-    private function getFavouritesCollection(): string
-    {
-        return 'user_favourites';
-    }
-
-    private function createTestJohn(): array
-    {
-        $connection = $this->getConnection();
-        $john = [
-            '_id' => new ObjectId(),
-            'name' => [
-                'first' => 'John',
-                'last' => 'Doe',
-            ],
-            'number' => 10,
-            'language' => 'pl',
-            'eye_color' => 'brown',
-            'wallet' => [
-                'currency' => 'EUR',
-                'amount' => 20.00,
-            ],
-            'favourite_colors' => ['red', 'green']
-        ];
-        $createJohn = new Insert($this->getUsersCollection(), $john);
-        $connection->execute($createJohn);
-
-        return $john;
-    }
-
-    private function generateUsersAndFavourites(int $userAmount = 100, int $favPerUser = 10): void
+    private function generateUsersAndFavourites(int $userAmount = 100, int $favPerUser = 10) : void
     {
         $connection = $this->getConnection();
         $users = $this->generateUsers($userAmount);
-        $this->createCollection($this->getFavouritesCollection());
+        $this->createCollection('users');
         $faker = Faker::create();
         foreach ($users as $user) {
             for ($i = 0; $i < $favPerUser; $i++) {
-                $connection->execute(new Insert($this->getFavouritesCollection(), [
+                $connection->execute(new Insert('user_favourites', [
                     'user_id' => $user['_id'],
                     'color' => $faker->colorName,
                     'password' => $faker->password,
@@ -92,31 +58,41 @@ trait CommandTest
         }
     }
 
-    private function generateUsers(int $amount = 100): array
+    private function generateUsers(int $amount = 100) : array
     {
-        $connection = $this->getConnection();
-        $this->createCollection($this->getUsersCollection());
+        $this->createCollection('users');
 
         $users = [];
-        $faker = Faker::create();
+
         for ($i = 0; $i < $amount; $i++) {
-            $id = new ObjectId();
-            $connection->execute(new Insert($this->getUsersCollection(), $users[(string) $id] = [
-                '_id' => $id,
-                'name' => [
-                    'first' => $faker->firstName,
-                    'last' => $faker->lastName,
-                ],
-                'language' => $faker->randomElement(['en', 'de', 'pl', 'fr', 'it']),
-                'email' => $faker->email,
-                'wallet_currency' => $faker->randomElement(['GBP', 'USD', 'EUR']),
-                'wallet_amount' => $faker->randomFloat(2, 10, 10000),
-                'eye_color' => $faker->colorName,
-                'number' => $amount - $i,
-                'age' => mt_rand(16, 100),
-            ]));
+            $user = $this->generateUser(['number' => $amount - $i]);
+            $users[(string) $user['_id']] = $user;
         }
 
         return $users;
+    }
+
+    private function generateUser(array $parameters = []) : array
+    {
+        $faker = Faker::create();
+        $id = new ObjectId();
+        $user = $parameters + [
+            '_id' => $id,
+            'name' => [
+                'first' => $faker->firstName,
+                'last' => $faker->lastName,
+            ],
+            'number' => mt_rand(0, 10000),
+            'language' => $faker->randomElement(['en', 'de', 'pl', 'fr', 'it']),
+            'email' => $faker->email,
+            'wallet_currency' => $faker->randomElement(['GBP', 'USD', 'EUR']),
+            'wallet_amount' => $faker->randomFloat(2, 10, 10000),
+            'eye_color' => $faker->colorName,
+            'age' => mt_rand(16, 100),
+        ];
+        $connection = $this->getConnection();
+        $connection->execute(new Insert('users', $user));
+
+        return $user;
     }
 }

@@ -2,10 +2,10 @@
 
 namespace FatCode\Tests\Storage\Driver\MongoDB\Command;
 
-use FatCode\Storage\Driver\MongoDB\Command\Find;
-use FatCode\Storage\Driver\MongoDB\Command\Operation\Join;
-use FatCode\Storage\Driver\MongoDB\Command\Operation\Limit;
-use FatCode\Storage\Driver\MongoDB\Command\Operation\Select;
+use FatCode\Storage\Driver\MongoDb\Command\Find;
+use FatCode\Storage\Driver\MongoDb\Command\Operation\Join;
+use FatCode\Storage\Driver\MongoDb\Command\Operation\Limit;
+use FatCode\Storage\Driver\MongoDb\Command\Operation\Select;
 use PHPUnit\Framework\TestCase;
 
 final class FindTest extends TestCase
