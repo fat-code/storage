@@ -3,9 +3,9 @@
 namespace FatCode\Storage\Driver\MongoDb\Command\Operation;
 
 /**
- * The pop operator removes the last element of an array.
+ * The unshift operator removes the first element of an array.
  */
-class Pop implements UpdateOperation
+class Unshift implements UpdateOperation
 {
     private $field;
 
@@ -18,7 +18,7 @@ class Pop implements UpdateOperation
     {
         return [
             '$pop' => [
-                $this->field => 1,
+                $this->field => -1,
             ],
         ];
     }

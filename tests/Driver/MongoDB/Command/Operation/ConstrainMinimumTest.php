@@ -12,7 +12,7 @@ final class ConstrainMinimumTest extends TestCase
 {
     use DatabaseHelpers;
 
-    public function testConstrainForEach() : void
+    public function testForEach() : void
     {
         $connection = $this->getConnection();
         $this->generateUser(['age' => 10]);
@@ -30,7 +30,7 @@ final class ConstrainMinimumTest extends TestCase
         self::assertNull($constrained);
     }
 
-    public function testConstrainForId() : void
+    public function testForId() : void
     {
         $connection = $this->getConnection();
         $id = new ObjectId();

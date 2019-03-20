@@ -10,10 +10,10 @@ class Rename implements UpdateOperation
     private $field;
     private $value;
 
-    public function __construct(string $field, string $value)
+    public function __construct(string $oldName, string $newName)
     {
-        $this->field = $field;
-        $this->value = $value;
+        $this->field = $oldName;
+        $this->value = $newName;
     }
 
     public function apply(): array

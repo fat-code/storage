@@ -83,6 +83,7 @@ trait DatabaseHelpers
                 'first' => $faker->firstName,
                 'last' => $faker->lastName,
             ],
+            'fingers' => [1,2,3,4,5],
             'number' => mt_rand(0, 10000),
             'language' => $faker->randomElement(['en', 'de', 'pl', 'fr', 'it']),
             'email' => $faker->email,

@@ -12,7 +12,7 @@ final class IncrementTest extends TestCase
 {
     use DatabaseHelpers;
 
-    public function testIncrementForEach() : void
+    public function testForEach() : void
     {
         $this->createCollection('users');
         $this->generateUser(['age' => 11]);
@@ -26,7 +26,7 @@ final class IncrementTest extends TestCase
         }
     }
 
-    public function testIncrementForId() : void
+    public function testForId() : void
     {
         $id = new ObjectId();
         $this->generateUser(['_id' => $id, 'age' => 10]);
