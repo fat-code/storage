@@ -1,4 +1,4 @@
-# Storage
+# Storage [![Build Status](https://travis-ci.org/fat-code/storage.svg?branch=master)](https://travis-ci.org/fat-code/storage)
 
 ## Installation
 `composer install fatcode/storage`
