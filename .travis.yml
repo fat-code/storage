@@ -18,10 +18,17 @@ before_install:
   - mongo test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
   - pecl install -f mongodb-${DRIVER_VERSION}
   - composer install --no-interaction --no-progress --no-suggest
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
 
 script:
-  - composer phpunit
-  - composer phpcs
+  - vendor/bin/phpunit --coverage-clover=clover.xml
+  - vendor/bin/phpcs --standard=PSR12 --warning-severity=0 src
+
+after_script:
+  - bash <(curl -s https://codecov.io/bash)
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 cache:
   directories:
