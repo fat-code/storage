@@ -1,2 +1,5 @@
 /.idea
 /vendor
+.DS_Store
+/coverage.clover
+/composer.lock

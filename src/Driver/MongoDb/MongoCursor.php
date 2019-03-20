@@ -12,8 +12,19 @@ use FatCode\Storage\Hydration\Hydrator;
 
 class MongoCursor implements HydratingCursor
 {
+    /**
+     * @var Connection
+     */
     private $connection;
+
+    /**
+     * @var Command
+     */
     private $command;
+
+    /**
+     * @var MongoDBCursor
+     */
     private $baseCursor;
 
     /**

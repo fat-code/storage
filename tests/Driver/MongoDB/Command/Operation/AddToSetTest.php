@@ -7,12 +7,13 @@ use FatCode\Storage\Driver\MongoDb\Command\Find;
 use FatCode\Storage\Driver\MongoDb\Command\Operation\AddToSet;
 use FatCode\Storage\Driver\MongoDb\Command\Operation\Limit;
 use FatCode\Storage\Driver\MongoDb\Command\Update;
-use FatCode\Tests\Storage\Driver\MongoDB\Command\CommandTest;
+use FatCode\Tests\Storage\Driver\MongoDB\Command\DatabaseHelpers;
+use MongoDB\BSON\ObjectId;
 use PHPUnit\Framework\TestCase;
 
 final class AddToSetTest extends TestCase
 {
-    use CommandTest;
+    use DatabaseHelpers;
 
     public function testAddToSetUsingSimpleInterface() : void
     {

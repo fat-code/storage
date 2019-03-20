@@ -14,7 +14,7 @@ use FatCode\Storage\Driver\MongoDb\Command\Update;
 use FatCode\Storage\Exception\DriverException;
 use MongoDB\BSON\ObjectId;
 
-class Collection
+class MongoCollection
 {
     private $connection;
     private $collection;
@@ -25,6 +25,13 @@ class Collection
         $this->collection = $collection;
     }
 
+    /**
+     * Retrieves and returns document from the collection by its id,
+     * null is returned if document was not found.
+     *
+     * @param ObjectId $id
+     * @return array|null
+     */
     public function get(ObjectId $id) : ?array
     {
         $find = new Find($this->collection, ['_id' => $id], new Limit(1));
@@ -33,9 +40,16 @@ class Collection
         return $object;
     }
 
-    public function find(array $query = [], FindOperation ...$operation) : MongoCursor
+    /**
+     * Finds documents matching the filter
+     *
+     * @param array $filter
+     * @param FindOperation ...$operation
+     * @return MongoCursor
+     */
+    public function find(array $filter = [], FindOperation ...$operation) : MongoCursor
     {
-        $find = new Find($this->collection, $query, ...$operation);
+        $find = new Find($this->collection, $filter, ...$operation);
         return $this->connection->execute($find);
     }
 
@@ -49,12 +63,14 @@ class Collection
         return $object;
     }
 
-    public function insert(array $document) : bool
+    public function insert($document) : bool
     {
         $insert = new Insert($this->collection, $document);
         $cursor = $this->connection->execute($insert);
         $result = $cursor->current();
         $cursor->close();
+
+        return $result['ok'] == 1 && $result['n'] == 1;
     }
 
     public function update(array $document) : bool
@@ -75,11 +91,8 @@ class Collection
         $cursor = $this->connection->execute($update);
         $result = $cursor->current();
         $cursor->close();
-        if ($result['ok'] == 1 && $result['nModified'] > 0) {
-            return true;
-        }
 
-        return false;
+        return $result['ok'] == 1 && $result['nModified'] > 0;
     }
 
     public function upsert(array $document)
@@ -102,16 +115,35 @@ class Collection
 
     }
 
-    public function forEach(UpdateOperation ...$changesets)
+    /**
+     * Applies update operation(s) on each document and returns number
+     * of modified documents in the database
+     *
+     * @param UpdateOperation ...$operation
+     * @return int
+     */
+    public function forEach(UpdateOperation ...$operation) : int
     {
+        $changeset = new Changeset([], ...$operation);
+        $changeset->multi(true);
+        $update = new Update($this->collection, $changeset);
+        $result = $this->connection->execute($update)->current();
 
+        return $result['n'];
     }
 
+    /**
+     * Applies update operation(s) on document with given id and returns
+     * boolean flag, true if any changes were made, otherwise false.
+     *
+     * @param ObjectId $id
+     * @param UpdateOperation ...$operation
+     */
     public function forId(ObjectId $id, UpdateOperation ...$operation)
     {
         $changeset = new Changeset(['_id' => $id], ...$operation);
         $changeset->multi(false);
         $update = new Update($this->collection, $changeset);
-        $this->connection->execute($update);
+        $result = $this->connection->execute($update)->current();
     }
 }

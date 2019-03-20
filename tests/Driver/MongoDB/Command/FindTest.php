@@ -10,13 +10,13 @@ use PHPUnit\Framework\TestCase;
 
 final class FindTest extends TestCase
 {
-    use CommandTest;
+    use DatabaseHelpers;
 
     public function testFindWithoutOptions(): void
     {
         $this->generateUsers(100);
         $connection = $this->getConnection();
-        $cursor = $connection->execute(new Find($this->getUsersCollection()));
+        $cursor = $connection->execute(new Find('users'));
         $items = $cursor->toArray();
         self::assertCount(100, $items);
     }
@@ -26,7 +26,7 @@ final class FindTest extends TestCase
         $users = $this->generateUsers(100);
         $eyeColor = current($users)['eye_color'];
         $connection = $this->getConnection();
-        $cursor = $connection->execute(new Find($this->getUsersCollection(), ['eye_color' => $eyeColor]));
+        $cursor = $connection->execute(new Find('users', ['eye_color' => $eyeColor]));
 
         $found = $cursor->toArray();
 
@@ -42,7 +42,7 @@ final class FindTest extends TestCase
         $connection = $this->getConnection();
         $cursor = $connection->execute(
             new Find(
-                $this->getUsersCollection(),
+                'users',
                 [],
                 new Select('eye_color', 'number')
             )
@@ -67,9 +67,10 @@ final class FindTest extends TestCase
         $connection = $this->getConnection();
 
         $cursor = $connection->execute(
-            Find::all(
-                $this->getUsersCollection(),
-                new Join($this->getFavouritesCollection(), '_id', 'user_id', 'favourites'),
+            new Find(
+                'users',
+                [],
+                new Join('user_favourites', '_id', 'user_id', 'favourites'),
                 new Select('name', 'favourites.color', 'favourites.fruit'),
                 new Limit(4)
             )

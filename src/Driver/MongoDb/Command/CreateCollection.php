@@ -5,6 +5,10 @@ namespace FatCode\Storage\Driver\MongoDb\Command;
 use FatCode\Storage\Driver\Connection;
 use FatCode\Storage\Driver\MongoDb\MongoCommand;
 
+/**
+ * Creates new collection in database, if collection exists it will be
+ * overridden!
+ */
 final class CreateCollection implements MongoCommand
 {
     private $command;

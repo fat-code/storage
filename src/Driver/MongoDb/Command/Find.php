@@ -4,6 +4,7 @@ namespace FatCode\Storage\Driver\MongoDb\Command;
 
 use FatCode\Storage\Driver\Connection;
 use FatCode\Storage\Driver\MongoDb\Collation;
+use FatCode\Storage\Driver\MongoDb\Command\Operation\Join;
 use FatCode\Storage\Driver\MongoDb\MongoCommand;
 use FatCode\Storage\Driver\MongoDb\Command\Operation\FindOperation;
 use function array_filter;
@@ -24,7 +25,7 @@ final class Find implements MongoCommand
         $this->filter = $filter;
         $this->options = $options;
         $hasJoin = function ($option) {
-            return $option instanceof Command\Operation\Join;
+            return $option instanceof Join;
         };
         $this->useAggregation = count(array_filter($options, $hasJoin)) >= 1;
     }

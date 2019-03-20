@@ -28,7 +28,7 @@ final class MongoConnection implements Connection
     private $options;
 
     /**
-     * @var Collection[]
+     * @var MongoCollection[]
      */
     private $collections = [];
 
@@ -56,12 +56,12 @@ final class MongoConnection implements Connection
         $this->handler = null;
     }
 
-    public function __get(string $name) : Collection
+    public function __get(string $name) : MongoCollection
     {
         if (isset($this->collections[$name])) {
             return $this->collections[$name];
         }
-        return $this->collections[$name] = new Collection($this, $name);
+        return $this->collections[$name] = new MongoCollection($this, $name);
     }
 
     /**

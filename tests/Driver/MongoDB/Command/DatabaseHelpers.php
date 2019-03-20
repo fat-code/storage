@@ -11,7 +11,7 @@ use FatCode\Storage\Driver\MongoDb\MongoConnection;
 use FatCode\Storage\Driver\MongoDb\MongoConnectionOptions;
 use Throwable;
 
-trait CommandTest
+trait DatabaseHelpers
 {
     /** @var MongoConnection */
     private $connection;
@@ -41,8 +41,9 @@ trait CommandTest
     private function generateUsersAndFavourites(int $userAmount = 100, int $favPerUser = 10) : void
     {
         $connection = $this->getConnection();
-        $users = $this->generateUsers($userAmount);
         $this->createCollection('users');
+        $this->createCollection('user_favourites');
+        $users = $this->generateUsers($userAmount);
         $faker = Faker::create();
         foreach ($users as $user) {
             for ($i = 0; $i < $favPerUser; $i++) {

@@ -4,6 +4,7 @@ namespace FatCode\Storage\Driver\MongoDb\Command;
 
 use FatCode\Storage\Driver\Connection;
 use FatCode\Storage\Driver\MongoDb\Collation;
+use FatCode\Storage\Driver\MongoDb\Command\Operation\PipelineOperation;
 use FatCode\Storage\Driver\MongoDb\MongoCommand;
 
 final class Aggregate implements MongoCommand
@@ -12,7 +13,7 @@ final class Aggregate implements MongoCommand
     private $pipeline;
     private $collation;
 
-    public function __construct(string $collection, Command\Operation\PipelineOperation ...$pipeline)
+    public function __construct(string $collection, PipelineOperation ...$pipeline)
     {
         $this->collection = $collection;
         $this->pipeline = $pipeline;
