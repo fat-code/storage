@@ -3,6 +3,7 @@ language: php
 env:
   global:
     - DRIVER_VERSION=1.5.3
+    - CC_TEST_REPORTER_ID=f4e155d66ed4faf2b999d7d080dfb69bcf6d8c6b3da2378a1100230466d8d4a6
 
 sudo: true
 
@@ -27,7 +28,6 @@ script:
   - vendor/bin/phpcs --standard=PSR12 --warning-severity=0 src
 
 after_script:
-  - bash <(curl -s https://codecov.io/bash)
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 cache:
