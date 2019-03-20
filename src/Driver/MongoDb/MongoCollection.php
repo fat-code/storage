@@ -125,7 +125,7 @@ class MongoCollection
         $update = new Update($this->collection, $changeset);
         $result = $this->connection->execute($update)->current();
 
-        return $result['n'];
+        return $result['nModified'];
     }
 
     /**
