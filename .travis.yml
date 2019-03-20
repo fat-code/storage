@@ -8,18 +8,14 @@ php:
 
 before_install:
   - composer self-update
-  - pecl install mongodb
   - mongo test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
 
 install:
   - composer update
 
 script:
-  - vendor/bin/phpunit
-
-after_script:
-  - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+  - composer phpunit
+  - composer phpcs
 
 cache:
   directories:

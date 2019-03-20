@@ -97,22 +97,18 @@ class MongoCollection
 
     public function upsert(array $document)
     {
-
     }
 
     public function delete(array $document)
     {
-
     }
 
     public function findAndDelete(array $query)
     {
-
     }
 
     public function aggregate(PipelineOperation ...$operation)
     {
-
     }
 
     /**

@@ -5,7 +5,7 @@ namespace FatCode\Storage\Driver\MongoDb\Command\Operation;
 /**
  * Delete operator deletes the specified field
  */
-class Delete implements UpdateOperation
+class UnsetField implements UpdateOperation
 {
     private $fields;
 

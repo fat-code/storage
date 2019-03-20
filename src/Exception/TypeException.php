@@ -19,6 +19,5 @@ class TypeException extends StorageException
 
     public static function forInvalidTypeRegister(string $type): self
     {
-
     }
 }
