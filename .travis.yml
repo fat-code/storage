@@ -1,5 +1,9 @@
 language: php
 
+env:
+  global:
+    - DRIVER_VERSION=1.5.3
+
 sudo: true
 
 services:
@@ -12,6 +16,7 @@ php:
 before_install:
   - composer self-update
   - mongo test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
+  - pecl install -f mongodb-${DRIVER_VERSION}
 
 install:
   - composer update
