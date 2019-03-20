@@ -1,4 +1,4 @@
-# Storage [![Build Status](https://travis-ci.org/fat-code/storage.svg?branch=master)](https://travis-ci.org/fat-code/storage)
+# Storage [![Build Status](https://travis-ci.org/fat-code/storage.svg?branch=master)](https://travis-ci.org/fat-code/storage) [![Maintainability](https://api.codeclimate.com/v1/badges/537840eb6a24da002d3b/maintainability)](https://codeclimate.com/github/fat-code/storage/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/537840eb6a24da002d3b/test_coverage)](https://codeclimate.com/github/fat-code/storage/test_coverage)
 
 ## Installation
 `composer install fatcode/storage`
