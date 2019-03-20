@@ -22,7 +22,7 @@ class Multiply implements UpdateOperation
      */
     public function __construct(string $field, $value)
     {
-        if (!is_float($value) && is_int($value)) {
+        if (!is_float($value) && !is_int($value)) {
             throw DriverException::forOperationFailure($this, 'passed value type must be either int or float');
         }
 

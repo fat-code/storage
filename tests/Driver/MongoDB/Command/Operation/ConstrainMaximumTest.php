@@ -12,7 +12,7 @@ final class ConstrainMaximumTest extends TestCase
 {
     use DatabaseHelpers;
 
-    public function testConstrainForEach() : void
+    public function testForEach() : void
     {
         $connection = $this->getConnection();
         $this->generateUser(['age' => 100]);
@@ -30,7 +30,7 @@ final class ConstrainMaximumTest extends TestCase
         self::assertNull($olderThan50);
     }
 
-    public function testConstrainForId() : void
+    public function testForId() : void
     {
         $connection = $this->getConnection();
         $id = new ObjectId();
