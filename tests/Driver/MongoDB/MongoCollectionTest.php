@@ -45,4 +45,44 @@ final class MongoCollectionTest extends TestCase
         self::assertSame('John', $john['name']);
         self::assertSame('Doe', $john['lastName']);
     }
+
+    public function testInsertFail() : void
+    {
+        $id = new ObjectId();
+        $collection = new MongoCollection($this->getConnection(), 'users');
+        $success = $collection->insert([
+            '_id' => $id,
+            'name' => 'John',
+            'lastName' => 'Doe'
+        ]);
+        self::assertTrue($success);
+        $success = $collection->insert([
+            '_id' => $id,
+            'name' => 'John',
+            'lastName' => 'Doe'
+        ]);
+        self::assertFalse($success);
+    }
+
+    public function testUpdate() : void
+    {
+        $id = new ObjectId();
+        $collection = new MongoCollection($this->getConnection(), 'users');
+        $success = $collection->insert([
+            '_id' => $id,
+            'name' => 'John',
+            'lastName' => 'Doe'
+        ]);
+        self::assertTrue($success);
+        $success = $collection->update(['_id' => $id, 'name' => 'Bob']);
+        self::assertTrue($success);
+
+        $bob = $collection->get($id);
+        self::assertSame('Bob', $bob['name']);
+    }
+
+    public function testUpdateFailWithoutId() : void
+    {
+        
+    }
 }
