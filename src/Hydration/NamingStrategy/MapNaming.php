@@ -4,15 +4,22 @@ namespace FatCode\Storage\Hydration\NamingStrategy;
 
 class MapNaming implements NamingStrategy
 {
-    private $map;
+    private $hydrationMap;
+    private $extractionMap;
 
     public function __construct(array $map)
     {
-        $this->map = $map;
+        $this->hydrationMap = $map;
+        $this->extractionMap = array_flip($map);
     }
 
-    public function map(string $name) : string
+    public function hydrate(string $name) : string
     {
-        return isset($this->map[$name]) ? $this->map[$name] : $name;
+        return isset($this->hydrationMap[$name]) ? $this->hydrationMap[$name] : $name;
+    }
+
+    public function extract(string $name): string
+    {
+        return isset($this->extractionMap[$name]) ? $this->extractionMap[$name] : $name;
     }
 }

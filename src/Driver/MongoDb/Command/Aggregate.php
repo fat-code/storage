@@ -7,7 +7,7 @@ use FatCode\Storage\Driver\MongoDb\Collation;
 use FatCode\Storage\Driver\MongoDb\Command\Operation\PipelineOperation;
 use FatCode\Storage\Driver\MongoDb\MongoCommand;
 
-final class Aggregate implements MongoCommand
+final class Aggregate extends MongoCommand
 {
     private $collection;
     private $pipeline;
@@ -38,7 +38,7 @@ final class Aggregate implements MongoCommand
         foreach ($this->pipeline as $item) {
             $command['pipeline'][] = $item->addToPipeline();
         }
-
+        $this->command = $command;
         $handler($command);
     }
 }
