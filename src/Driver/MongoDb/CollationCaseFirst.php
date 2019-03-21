@@ -2,7 +2,7 @@
 
 namespace FatCode\Storage\Driver\MongoDb;
 
-use FatCode\Storage\Enum;
+use FatCode\Enum;
 
 class CollationCaseFirst extends Enum
 {
