@@ -2,6 +2,7 @@
 
 namespace FatCode\Storage\Driver\MongoDb\Command;
 
+use FatCode\Storage\Driver\MongoDb\Collation;
 use FatCode\Storage\Driver\MongoDb\MongoCommand;
 
 /**
@@ -10,14 +11,14 @@ use FatCode\Storage\Driver\MongoDb\MongoCommand;
  */
 final class CreateCollection extends MongoCommand
 {
-    public function __construct(string $name, array $collation = null)
+    public function __construct(string $name, Collation $collation = null)
     {
         $this->command = [
             'create' => $name,
         ];
 
         if ($collation) {
-            $this->command['collation'] = $collation;
+            $this->command += $collation->apply();
         }
     }
 }

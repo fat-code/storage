@@ -20,7 +20,7 @@ class Collation
      * @param CollationCaseFirst $caseFirst
      * @return Collation
      */
-    public function withCaseFirst(CollationCaseFirst $caseFirst): self
+    public function withCaseFirst(CollationCaseFirst $caseFirst) : self
     {
         $new = clone $this;
         $new->caseFirst = $caseFirst->getValue();
@@ -33,7 +33,7 @@ class Collation
      * @param bool $level
      * @return Collation
      */
-    public function withCaseLevel(bool $level): self
+    public function withCaseLevel(bool $level) : self
     {
         $new = clone $this;
         $new->caseLevel = $level;
@@ -41,7 +41,7 @@ class Collation
         return $new;
     }
 
-    public function apply(): array
+    public function apply() : array
     {
         $collation = [
             'locale' => $this->locale,

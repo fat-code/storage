@@ -6,6 +6,9 @@ use FatCode\Storage\Driver\Command;
 use FatCode\Storage\Driver\Connection;
 use FatCode\Storage\Driver\ConnectionOptions;
 use FatCode\Storage\Driver\Cursor as DriverCursor;
+use FatCode\Storage\Driver\MongoDb\Command\CreateCollection;
+use FatCode\Storage\Driver\MongoDb\Command\DropCollection;
+use FatCode\Storage\Driver\MongoDb\Command\ListCollections;
 use FatCode\Storage\Exception\DriverException;
 use MongoDB;
 use Throwable;
@@ -58,10 +61,7 @@ final class MongoConnection implements Connection
 
     public function __get(string $name) : MongoCollection
     {
-        if (isset($this->collections[$name])) {
-            return $this->collections[$name];
-        }
-        return $this->collections[$name] = new MongoCollection($this, $name);
+        return $this->getCollection($name);
     }
 
     /**
@@ -107,6 +107,38 @@ final class MongoConnection implements Connection
             $this->options->getURIOptions(),
             $this->options->getDriverOptions()
         );
+    }
+
+    public function getCollection(string $name) : MongoCollection
+    {
+        if (isset($this->collections[$name])) {
+            return $this->collections[$name];
+        }
+        return $this->collections[$name] = new MongoCollection($this, $name);
+    }
+
+    public function createCollection(string $name, Collation $collation = null) : void
+    {
+        $cursor = $this->execute(new CreateCollection($name, $collation));
+        $cursor->close();
+    }
+
+    public function dropCollection(string $name) : void
+    {
+        $cursor = $this->execute(new DropCollection($name));
+        $cursor->close();
+    }
+
+    public function listCollections() : array
+    {
+        $collections = [];
+        $cursor = $this->execute(new ListCollections());
+        foreach ($cursor as $collection) {
+            $collections[] = $collection['name'];
+        }
+        $cursor->close();
+
+        return $collections;
     }
 
     public function isConnected(): bool
