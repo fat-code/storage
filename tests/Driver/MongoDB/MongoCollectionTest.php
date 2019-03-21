@@ -3,6 +3,7 @@
 namespace FatCode\Tests\Storage\Driver\MongoDB;
 
 use FatCode\Storage\Driver\MongoDb\MongoCollection;
+use FatCode\Storage\Exception\DriverException;
 use FatCode\Tests\Storage\Driver\MongoDB\Command\DatabaseHelpers;
 use MongoDB\BSON\ObjectId;
 use PHPUnit\Framework\TestCase;
@@ -46,6 +47,15 @@ final class MongoCollectionTest extends TestCase
         self::assertSame('Doe', $john['lastName']);
     }
 
+    public function testInsertMany() : void
+    {
+        $this->createCollection('users');
+        $collection = new MongoCollection($this->getConnection(), 'users');
+        $success = $collection->insert(['name' => 'Bob'], ['name' => 'John'], ['name' => 'Tom']);
+
+        self::assertTrue($success);
+    }
+
     public function testInsertFail() : void
     {
         $id = new ObjectId();
@@ -83,6 +93,15 @@ final class MongoCollectionTest extends TestCase
 
     public function testUpdateFailWithoutId() : void
     {
-        
+        $this->expectException(DriverException::class);
+        $id = new ObjectId();
+        $collection = new MongoCollection($this->getConnection(), 'users');
+        $success = $collection->insert([
+            '_id' => $id,
+            'name' => 'John',
+            'lastName' => 'Doe'
+        ]);
+        self::assertTrue($success);
+        $collection->update(['name' => 'Bob']);
     }
 }

@@ -63,43 +63,48 @@ class MongoCollection
         return $object;
     }
 
-    public function insert($document) : bool
+    public function insert(array ...$document) : bool
     {
-        $insert = new Insert($this->collection, $document);
+        $insert = new Insert($this->collection, ...$document);
         $cursor = $this->connection->execute($insert);
         $result = $cursor->current();
         $cursor->close();
 
-        return $result['ok'] == 1 && $result['n'] == 1;
+        return $result['ok'] == 1 && $result['n'] == count($document);
     }
 
-    public function update(array $document) : bool
+    public function update(array ...$document) : bool
     {
-        if (!isset($document['_id'])) {
-            throw DriverException::forCommandFailure(
-                new Update($this->collection),
-                'Cannot update document without identifier.'
-            );
-        }
-        $update = new Update(
-            $this->collection,
-            new Changeset(
+        $changeSets = [];
+        foreach ($document as $item) {
+            if (!isset($item['_id'])) {
+                throw DriverException::forCommandFailure(
+                    new Update($this->collection),
+                    'Cannot update document without identifier.'
+                );
+            }
+            $changeSets = new Changeset(
                 ['_id' => $document['_id']],
                 new UpdateDocument($document)
-            )
+            );
+        }
+
+        $update = new Update(
+            $this->collection,
+            ...$changeSets
         );
         $cursor = $this->connection->execute($update);
         $result = $cursor->current();
         $cursor->close();
 
-        return $result['ok'] == 1 && $result['nModified'] > 0;
+        return $result['ok'] == 1 && $result['n'] === count($document);
     }
 
     public function upsert(array $document)
     {
     }
 
-    public function delete(array $document)
+    public function delete(array ...$document)
     {
     }
 
@@ -123,7 +128,9 @@ class MongoCollection
         $changeset = new Changeset([], ...$operation);
         $changeset->multi(true);
         $update = new Update($this->collection, $changeset);
-        $result = $this->connection->execute($update)->current();
+        $cursor = $this->connection->execute($update);
+        $result = $cursor->current();
+        $cursor->close();
 
         return $result['nModified'];
     }
@@ -134,12 +141,17 @@ class MongoCollection
      *
      * @param ObjectId $id
      * @param UpdateOperation ...$operation
+     * @return bool
      */
-    public function forId(ObjectId $id, UpdateOperation ...$operation)
+    public function forId(ObjectId $id, UpdateOperation ...$operation) : bool
     {
         $changeset = new Changeset(['_id' => $id], ...$operation);
         $changeset->multi(false);
         $update = new Update($this->collection, $changeset);
-        $result = $this->connection->execute($update)->current();
+        $cursor = $this->connection->execute($update);
+        $result = $cursor->current();
+        $cursor->close();
+
+        return $result['ok'] == 1 && $result['n'] == 1;
     }
 }
