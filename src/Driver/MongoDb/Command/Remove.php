@@ -2,10 +2,9 @@
 
 namespace FatCode\Storage\Driver\MongoDb\Command;
 
-use FatCode\Storage\Driver\Connection;
 use FatCode\Storage\Driver\MongoDb\MongoCommand;
 
-final class Remove implements MongoCommand
+final class Remove extends MongoCommand
 {
     private $command;
 
@@ -25,10 +24,5 @@ final class Remove implements MongoCommand
             'delete' => $collection,
             'deletes' => $deletes,
         ];
-    }
-
-    public function execute(callable $handler, Connection $connection): void
-    {
-        $handler($this->command);
     }
 }

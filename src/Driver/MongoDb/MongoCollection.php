@@ -30,7 +30,7 @@ class MongoCollection
      * Retrieves and returns document from the collection by its id,
      * null is returned if document was not found.
      *
-     * @param $id
+     * @param ObjectId|mixed $id
      * @return array|null
      */
     public function get($id) : ?array
@@ -156,7 +156,7 @@ class MongoCollection
 
     /**
      * Removes document from the collection, returns `true` on success otherwise `false`.
-     * @param mixed ...$id
+     * @param ObjectId|mixed ...$id
      * @return bool
      */
     public function delete(...$id) : bool
@@ -169,8 +169,28 @@ class MongoCollection
         return $result['n'] == 1 && $result['ok'] == 1;
     }
 
+    /**
+     * Modifies all documents matching filter with passed operations.
+     *
+     * @param array $filter
+     * @param UpdateOperation ...$operation
+     * @return int the amount of changed documents
+     */
+    public function findAndModify(array $filter, UpdateOperation ...$operation) : int
+    {
+        $changeset = new Changeset($filter, ...$operation);
+        $changeset->multi(false);
+        $update = new Update($this->collection, $changeset);
+        $cursor = $this->connection->execute($update);
+        $result = $cursor->current();
+        $cursor->close();
+
+        return $result['nModified'];
+    }
+
     public function findAndDelete(array $query)
     {
+
     }
 
     public function aggregate(PipelineOperation ...$operation)
@@ -200,19 +220,12 @@ class MongoCollection
      * Applies update operation(s) on document with given id and returns
      * boolean flag, true if any changes were made, otherwise false.
      *
-     * @param ObjectId $id
+     * @param ObjectId|mixed $id
      * @param UpdateOperation ...$operation
      * @return bool
      */
-    public function forId(ObjectId $id, UpdateOperation ...$operation) : bool
+    public function forId($id, UpdateOperation ...$operation) : bool
     {
-        $changeset = new Changeset(['_id' => $id], ...$operation);
-        $changeset->multi(false);
-        $update = new Update($this->collection, $changeset);
-        $cursor = $this->connection->execute($update);
-        $result = $cursor->current();
-        $cursor->close();
-
-        return $result['ok'] == 1 && $result['n'] == 1;
+        return $this->findAndModify(['_id' => $id], ...$operation) === 1;
     }
 }

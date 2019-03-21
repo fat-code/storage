@@ -2,10 +2,9 @@
 
 namespace FatCode\Storage\Driver\MongoDb\Command;
 
-use FatCode\Storage\Driver\Connection;
 use FatCode\Storage\Driver\MongoDb\MongoCommand;
 
-final class DropCollection implements MongoCommand
+final class DropCollection extends MongoCommand
 {
     private $command;
 
@@ -14,10 +13,5 @@ final class DropCollection implements MongoCommand
         $this->command = [
             'drop' => $collection,
         ];
-    }
-
-    public function execute(callable $handler, Connection $connection): void
-    {
-        $handler($this->command);
     }
 }

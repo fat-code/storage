@@ -10,7 +10,7 @@ use FatCode\Storage\Driver\MongoDb\Command\Operation\FindOperation;
 use function array_filter;
 use function count;
 
-final class Find implements MongoCommand
+final class Find extends MongoCommand
 {
     private $collection;
     private $filter;

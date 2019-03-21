@@ -2,10 +2,9 @@
 
 namespace FatCode\Storage\Driver\MongoDb\Command;
 
-use FatCode\Storage\Driver\Connection;
 use FatCode\Storage\Driver\MongoDb\MongoCommand;
 
-final class Update implements MongoCommand
+final class Update extends MongoCommand
 {
     private $command;
 
@@ -19,10 +18,5 @@ final class Update implements MongoCommand
             'update' => $collection,
             'updates' => $updates,
         ];
-    }
-
-    public function execute(callable $handler, Connection $connection): void
-    {
-        $handler($this->command);
     }
 }
