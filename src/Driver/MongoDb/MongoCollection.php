@@ -11,6 +11,7 @@ use FatCode\Storage\Driver\MongoDb\Command\Operation\PipelineOperation;
 use FatCode\Storage\Driver\MongoDb\Command\Operation\UpdateDocument;
 use FatCode\Storage\Driver\MongoDb\Command\Operation\UpdateOperation;
 use FatCode\Storage\Driver\MongoDb\Command\Remove;
+use FatCode\Storage\Driver\MongoDb\Command\RemoveById;
 use FatCode\Storage\Driver\MongoDb\Command\Update;
 use FatCode\Storage\Exception\DriverException;
 use MongoDB\BSON\ObjectId;
@@ -161,7 +162,7 @@ class MongoCollection
      */
     public function delete(...$id) : bool
     {
-        $delete = new Remove($this->collection, ...$id);
+        $delete = new RemoveById($this->collection, ...$id);
         $cursor = $this->connection->execute($delete);
         $result = $cursor->current();
         $cursor->close();
@@ -188,9 +189,14 @@ class MongoCollection
         return $result['nModified'];
     }
 
-    public function findAndDelete(array $query)
+    public function findAndDelete(array $query) : int
     {
+        $command = new Remove($this->collection, $query);
+        $cursor = $this->connection->execute($command);
+        $result = $cursor->current();
+        $cursor->close();
 
+        return $result['n'];
     }
 
     public function aggregate(PipelineOperation ...$operation)

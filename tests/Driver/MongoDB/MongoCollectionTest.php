@@ -140,4 +140,13 @@ final class MongoCollectionTest extends TestCase
         $user = $collection->get($id);
         self::assertNull($user);
     }
+
+    public function testFindAndDelete() : void
+    {
+        $this->generateUsers(10);
+        $collection = new MongoCollection($this->getConnection(), 'users');
+        $modified = $collection->findAndDelete([]);
+
+        self::assertSame(10, $modified);
+    }
 }

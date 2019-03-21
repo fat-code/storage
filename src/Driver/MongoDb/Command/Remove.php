@@ -3,24 +3,23 @@
 namespace FatCode\Storage\Driver\MongoDb\Command;
 
 use FatCode\Storage\Driver\MongoDb\MongoCommand;
+use stdClass;
 
 final class Remove extends MongoCommand
 {
-    public function __construct(string $collection, ...$ids)
+    public function __construct(string $collection, array $filter)
     {
-        $deletes = [];
-        foreach ($ids as $id) {
-            $deletes[] = [
-                'q' => [
-                    '_id' => $id,
-                ],
-                'limit' => 1,
-            ];
+        if (empty($filter)) {
+            $filter = new stdClass();
         }
-
         $this->command = [
             'delete' => $collection,
-            'deletes' => $deletes,
+            'deletes' => [
+                [
+                    'q' => $filter,
+                    'limit' => 0,
+                ]
+            ],
         ];
     }
 }
