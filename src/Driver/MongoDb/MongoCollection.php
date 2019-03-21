@@ -10,6 +10,7 @@ use FatCode\Storage\Driver\MongoDb\Command\Operation\Limit;
 use FatCode\Storage\Driver\MongoDb\Command\Operation\PipelineOperation;
 use FatCode\Storage\Driver\MongoDb\Command\Operation\UpdateDocument;
 use FatCode\Storage\Driver\MongoDb\Command\Operation\UpdateOperation;
+use FatCode\Storage\Driver\MongoDb\Command\Remove;
 use FatCode\Storage\Driver\MongoDb\Command\Update;
 use FatCode\Storage\Exception\DriverException;
 use MongoDB\BSON\ObjectId;
@@ -29,10 +30,10 @@ class MongoCollection
      * Retrieves and returns document from the collection by its id,
      * null is returned if document was not found.
      *
-     * @param ObjectId $id
+     * @param $id
      * @return array|null
      */
-    public function get(ObjectId $id) : ?array
+    public function get($id) : ?array
     {
         $find = new Find($this->collection, ['_id' => $id], new Limit(1));
         $object = $this->connection->execute($find)->current();
@@ -41,7 +42,7 @@ class MongoCollection
     }
 
     /**
-     * Finds documents matching the filter
+     * Finds documents matching the filter.
      *
      * @param array $filter
      * @param FindOperation ...$operation
@@ -53,6 +54,13 @@ class MongoCollection
         return $this->connection->execute($find);
     }
 
+    /**
+     * Finds and retrieves first document matching the filter.
+     *
+     * @param array $query
+     * @param FindOperation ...$operation
+     * @return array|null
+     */
     public function findOne(array $query = [], FindOperation ...$operation) : ?array
     {
         $operation[] = new Limit(1);
@@ -63,6 +71,12 @@ class MongoCollection
         return $object;
     }
 
+    /**
+     * Persists one or more documents in the collection.
+     *
+     * @param array ...$document
+     * @return bool
+     */
     public function insert(array ...$document) : bool
     {
         $insert = new Insert($this->collection, ...$document);
@@ -73,6 +87,12 @@ class MongoCollection
         return $result['ok'] == 1 && $result['n'] == count($document);
     }
 
+    /**
+     * Updates one or more documents in the collection.
+     *
+     * @param array ...$document
+     * @return bool
+     */
     public function update(array ...$document) : bool
     {
         $changeSets = [];
@@ -83,9 +103,9 @@ class MongoCollection
                     'Cannot update document without identifier.'
                 );
             }
-            $changeSets = new Changeset(
-                ['_id' => $document['_id']],
-                new UpdateDocument($document)
+            $changeSets[] = new Changeset(
+                ['_id' => $item['_id']],
+                new UpdateDocument($item)
             );
         }
 
@@ -100,12 +120,53 @@ class MongoCollection
         return $result['ok'] == 1 && $result['n'] === count($document);
     }
 
-    public function upsert(array $document)
+    /**
+     * Inserts or Updates one or more documents in the collection.
+     *
+     * @param array ...$document
+     * @return bool
+     */
+    public function upsert(array ...$document) : bool
     {
+        $changeSets = [];
+        foreach ($document as $item) {
+            if (!isset($item['_id'])) {
+                throw DriverException::forCommandFailure(
+                    new Update($this->collection),
+                    'Cannot upsert document without identifier.'
+                );
+            }
+            $change = new Changeset(
+                ['_id' => $item['_id']],
+                new UpdateDocument($item)
+            );
+            $change->upsert(true);
+            $changeSets[] = $change;
+        }
+        $update = new Update(
+            $this->collection,
+            ...$changeSets
+        );
+        $cursor = $this->connection->execute($update);
+        $result = $cursor->current();
+        $cursor->close();
+
+        return $result['ok'] == 1 && $result['n'] === count($document);
     }
 
-    public function delete(array ...$document)
+    /**
+     * Removes document from the collection, returns `true` on success otherwise `false`.
+     * @param mixed ...$id
+     * @return bool
+     */
+    public function delete(...$id) : bool
     {
+        $delete = new Remove($this->collection, ...$id);
+        $cursor = $this->connection->execute($delete);
+        $result = $cursor->current();
+        $cursor->close();
+
+        return $result['n'] == 1 && $result['ok'] == 1;
     }
 
     public function findAndDelete(array $query)

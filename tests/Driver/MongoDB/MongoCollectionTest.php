@@ -104,4 +104,40 @@ final class MongoCollectionTest extends TestCase
         self::assertTrue($success);
         $collection->update(['name' => 'Bob']);
     }
+
+    public function testUpsert() : void
+    {
+        $id = new ObjectId();
+        $collection = new MongoCollection($this->getConnection(), 'users');
+        $success = $collection->upsert([
+            '_id' => $id,
+            'name' => 'John',
+            'lastName' => 'Doe'
+        ]);
+        self::assertTrue($success);
+
+        $success = $collection->upsert(['_id' => $id, 'name' => 'Bob']);
+        self::assertTrue($success);
+
+        $user = $collection->get($id);
+        self::assertSame('Bob', $user['name']);
+    }
+
+    public function testDelete() : void
+    {
+        $id = new ObjectId();
+        $collection = new MongoCollection($this->getConnection(), 'users');
+        $success = $collection->insert([
+            '_id' => $id,
+            'name' => 'John',
+            'lastName' => 'Doe'
+        ]);
+        self::assertTrue($success);
+
+        $success = $collection->delete($id);
+        self::assertTrue($success);
+
+        $user = $collection->get($id);
+        self::assertNull($user);
+    }
 }

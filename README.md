@@ -3,7 +3,7 @@
 ## Installation
 `composer install fatcode/storage`
 
-## Quick Reference
+## MongoDriver Quick Reference
 ### Connecting to database
 ```php
 <?php declare(strict_types=1);
@@ -39,7 +39,12 @@ $options->setReplicaSet('replicaSetName');
 $connection = new MongoConnection(['localhost:27017', 'localhost:27018'], $options);
 ```
 
-### Creating new collection
+### Operating on collections
+ > Storage recommends using `MongoDB\BSON\ObjectId` as id for all of your documents, but it is not enforced, 
+ > so any value can be passed to methods that accepts `$id` property. 
+ > It is also recommended to implement `__toString` interface if you are planning passing any objects as an id.
+
+#### Creating new collection
 ```php
 <?php
 use FatCode\Storage\Driver\MongoDb\Command\CreateCollection;
@@ -48,8 +53,14 @@ $connection->execute(new CreateCollection('myCollection'));
 // or simply access the collection and it will be created on runtime
 $connection->myCollection;
 ```
+Collection can be created in two ways:
+- Executing `CreateCollection` command which accepts collection name as first argument and collocation as second one
+- Directly accessing the collection and inserting new document
 
-### Dropping collection
+#### Dropping collection
+Oppositely to creating collection, removal of collection can only be achieved in one way, 
+which is executing `DropCollection` command:
+
 ```php
 <?php
 use FatCode\Storage\Driver\MongoDb\Command\DropCollection;
@@ -57,7 +68,10 @@ use FatCode\Storage\Driver\MongoDb\Command\DropCollection;
 $connection->execute(new DropCollection('myCollection'));
 ```
 
-### Creating new document
+#### Creating new document
+
+Following example creates new document containing `names` field. Once operation is executed boolean flag is returned
+to indicate either success (`true`) of failure (`false`)
 ```php
 <?php
 use MongoDB\BSON\ObjectId;
@@ -67,5 +81,43 @@ $myFavouritesColors = [
                             // so the state is final before document is persisted 
     'names' => ['black', 'black', 'black']
 ];
-$connection->myCollection->insert($myFavouritesColors);
+$success = $connection->myCollection->insert($myFavouritesColors);
+```
+
+#### Updating existing document
+Document can only be updated if it contains `_id` field, please check the following example:
+```php
+<?php
+use MongoDB\BSON\ObjectId;
+
+$myFavouritesColors = [
+    '_id' => new ObjectId('5c929b31cb406a2cd4106bb2'),
+    'names' => ['black', 'black', 'black', 'white']
+];
+$connection->myCollection->update($myFavouritesColors);
+```
+Once document is updated the boolean flag is returned indicating whether operation was successful.
+
+#### Removing document from the collection
+Document can be removed, by simply passing its id to `$collection->delete`:
+```php
+<?php
+use MongoDB\BSON\ObjectId;
+
+$connection->myCollection->delete(new ObjectId('5c929b31cb406a2cd4106bb2'));
+```
+
+#### Upserting document
+Upsert should be used in case when document presence in collection is unknown (we dont know if document exists in database already or not).
+Upsert either creates document if it does not exists in collection or updates existing one, like in update operation `_id`
+field must be defined during upsert operation.
+```php
+<?php
+use MongoDB\BSON\ObjectId;
+
+$myFavouritesColors = [
+    '_id' => new ObjectId('5c929b31cb406a2cd4106bb2'),
+    'names' => ['black', 'black', 'black', 'white']
+];
+$connection->myCollection->upsert($myFavouritesColors);
 ```
