@@ -10,8 +10,6 @@ use FatCode\Storage\Driver\MongoDb\MongoCommand;
  */
 final class CreateCollection extends MongoCommand
 {
-    private $command;
-
     public function __construct(string $name, array $collation = null)
     {
         $this->command = [

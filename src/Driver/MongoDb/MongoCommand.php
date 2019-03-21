@@ -7,6 +7,11 @@ use FatCode\Storage\Driver\Connection;
 
 abstract class MongoCommand implements Command
 {
+    /**
+     * @var array
+     */
+    protected $command;
+
     public function execute(callable $handler, Connection $connection) : void
     {
         $handler($this->command);

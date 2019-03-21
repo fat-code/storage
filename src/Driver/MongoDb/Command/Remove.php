@@ -6,8 +6,6 @@ use FatCode\Storage\Driver\MongoDb\MongoCommand;
 
 final class Remove extends MongoCommand
 {
-    private $command;
-
     public function __construct(string $collection, ...$ids)
     {
         $deletes = [];

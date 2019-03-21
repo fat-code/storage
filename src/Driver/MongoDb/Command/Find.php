@@ -55,7 +55,7 @@ final class Find extends MongoCommand
         if ($this->collation) {
             $command['collation'] = $this->collation->apply();
         }
-
+        $this->command = $command;
         $handler($command);
     }
 }

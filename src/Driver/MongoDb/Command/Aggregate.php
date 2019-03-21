@@ -38,7 +38,7 @@ final class Aggregate extends MongoCommand
         foreach ($this->pipeline as $item) {
             $command['pipeline'][] = $item->addToPipeline();
         }
-
+        $this->command = $command;
         $handler($command);
     }
 }

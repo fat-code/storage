@@ -6,8 +6,6 @@ use FatCode\Storage\Driver\MongoDb\MongoCommand;
 
 final class Update extends MongoCommand
 {
-    private $command;
-
     public function __construct(string $collection, Changeset ...$changesets)
     {
         $updates = [];

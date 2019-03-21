@@ -6,8 +6,6 @@ use FatCode\Storage\Driver\MongoDb\MongoCommand;
 
 final class Insert extends MongoCommand
 {
-    private $command;
-
     public function __construct(string $collection, array ...$documents)
     {
         $this->command = [
