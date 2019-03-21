@@ -4,7 +4,12 @@ namespace FatCode\Storage\Hydration\NamingStrategy;
 
 class DirectNaming implements NamingStrategy
 {
-    public function map(string $name) : string
+    public function hydrate(string $name) : string
+    {
+        return $name;
+    }
+
+    public function extract(string $name) : string
     {
         return $name;
     }

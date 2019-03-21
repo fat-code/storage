@@ -10,5 +10,13 @@ interface NamingStrategy
      * @param string $name
      * @return string
      */
-    public function map(string $name) : string;
+    public function hydrate(string $name) : string;
+
+    /**
+     * Converts given name so it can be extracted by the Extractor.
+     *
+     * @param string $name
+     * @return string
+     */
+    public function extract(string $name) : string;
 }

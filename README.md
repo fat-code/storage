@@ -6,7 +6,7 @@
 ## MongoDriver Quick Reference
 ### Connecting to database
 ```php
-<?php declare(strict_types=1);
+<?php
 
 use FatCode\Storage\Driver\MongoDb\MongoConnection;
 use FatCode\Storage\Driver\MongoDb\MongoConnectionOptions;
@@ -19,7 +19,7 @@ $connection = new MongoConnection('localhost', new MongoConnectionOptions('dbNam
 ##### Connecting with user and password
 
 ```php
-<?php declare(strict_types=1);
+<?php
 
 use FatCode\Storage\Driver\MongoDb\MongoConnectionOptions;
 
@@ -29,7 +29,7 @@ $options = new MongoConnectionOptions('dbName', 'username', 'secret');
 ##### Setting replica
 
 ```php
-<?php declare(strict_types=1);
+<?php
 
 use FatCode\Storage\Driver\MongoDb\MongoConnection;
 use FatCode\Storage\Driver\MongoDb\MongoConnectionOptions;
@@ -47,9 +47,8 @@ $connection = new MongoConnection(['localhost:27017', 'localhost:27018'], $optio
 #### Creating new collection
 ```php
 <?php
-use FatCode\Storage\Driver\MongoDb\Command\CreateCollection;
 
-$connection->execute(new CreateCollection('myCollection'));
+$connection->createCollection('myCollection');
 // or simply access the collection and it will be created on runtime
 $connection->myCollection;
 ```
@@ -58,14 +57,17 @@ Collection can be created in two ways:
 - Directly accessing the collection and inserting new document
 
 #### Dropping collection
-Oppositely to creating collection, removal of collection can only be achieved in one way, 
-which is executing `DropCollection` command:
 
 ```php
 <?php
-use FatCode\Storage\Driver\MongoDb\Command\DropCollection;
+$connection->dropCollection('myCollection');
+```
 
-$connection->execute(new DropCollection('myCollection'));
+#### Listing database collections
+The following code will return array of collection names.
+```php
+<?php
+$connection->listCollecitons();
 ```
 
 #### Creating new document

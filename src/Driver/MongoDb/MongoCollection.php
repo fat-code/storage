@@ -2,6 +2,7 @@
 
 namespace FatCode\Storage\Driver\MongoDb;
 
+use FatCode\Storage\Driver\MongoDb\Command\Aggregate;
 use FatCode\Storage\Driver\MongoDb\Command\Changeset;
 use FatCode\Storage\Driver\MongoDb\Command\Find;
 use FatCode\Storage\Driver\MongoDb\Command\Insert;
@@ -189,9 +190,14 @@ class MongoCollection
         return $result['nModified'];
     }
 
-    public function findAndDelete(array $query) : int
+    /**
+     * Removes all documents matching the filter
+     * @param array $filter
+     * @return int
+     */
+    public function findAndDelete(array $filter) : int
     {
-        $command = new Remove($this->collection, $query);
+        $command = new Remove($this->collection, $filter);
         $cursor = $this->connection->execute($command);
         $result = $cursor->current();
         $cursor->close();
@@ -199,8 +205,16 @@ class MongoCollection
         return $result['n'];
     }
 
-    public function aggregate(PipelineOperation ...$operation)
+    /**
+     * Performs aggregation and returns cursor.
+     *
+     * @param PipelineOperation ...$operation
+     * @return MongoCursor
+     */
+    public function aggregate(PipelineOperation ...$operation) : MongoCursor
     {
+        $command = new Aggregate($this->collection, ...$operation);
+        return $this->connection->execute($command);
     }
 
     /**

@@ -5,12 +5,11 @@ namespace FatCode\Storage\Hydration;
 use DateTimeZone;
 use FatCode\Storage\Exception\TypeException;
 use FatCode\Storage\Hydration\Type\BooleanType;
-use FatCode\Storage\Hydration\Type\CustomType;
+use FatCode\Storage\Hydration\Type\EmbedType;
 use FatCode\Storage\Hydration\Type\DateTimeType;
 use FatCode\Storage\Hydration\Type\DateType;
 use FatCode\Storage\Hydration\Type\DecimalType;
 use FatCode\Storage\Hydration\Type\EmbedManyType;
-use FatCode\Storage\Hydration\Type\EmbedType;
 use FatCode\Storage\Hydration\Type\FloatType;
 use FatCode\Storage\Hydration\Type\IdType;
 use FatCode\Storage\Hydration\Type\IntegerType;
@@ -39,7 +38,7 @@ final class Type
         'decimal' => DecimalType::class,
         'date' => DateType::class,
         'dateTime' => DateTimeType::class,
-        'custom' => CustomType::class,
+        'custom' => EmbedType::class,
         'embed' => EmbedType::class,
         'embedMany' => EmbedManyType::class,
     ];
@@ -131,32 +130,6 @@ final class Type
         }
 
         self::$types[$name] = $class;
-    }
-
-    public static function custom(callable $hydrator, callable $extractor): CustomType
-    {
-        return new CustomType(new class($hydrator, $extractor) implements Hydrator
-        {
-
-            private $hydrator;
-            private $extractor;
-
-            public function __construct(callable $hydrator, callable $extractor)
-            {
-                $this->hydrator = $hydrator;
-                $this->extractor = $extractor;
-            }
-
-            public function hydrate(array $input, object $object = null): object
-            {
-                return ($this->hydrator)($input);
-            }
-
-            public function extract(object $object): array
-            {
-                return (array)($this->extractor)($object);
-            }
-        });
     }
 
     public static function __callStatic($name, $arguments): BaseType
