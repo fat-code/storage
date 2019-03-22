@@ -6,74 +6,54 @@ use ArrayIterator;
 use Countable;
 use FatCode\Storage\Hydration\NamingStrategy\DirectNaming;
 use FatCode\Storage\Hydration\NamingStrategy\NamingStrategy;
-use FatCode\Storage\Hydration\Type\IdType;
 use FatCode\Storage\Hydration\Type\Type;
+use Iterator;
 use IteratorAggregate;
-use Traversable;
+use function count;
 
-class Schema implements IteratorAggregate, Countable
+abstract class Schema implements IteratorAggregate, Countable
 {
-    private $id;
-    private $className;
-    private $properties = [];
-    private $namingStrategy;
+    private $_properties = [];
+    private $_namingStrategy;
 
-    public function __construct(string $className, array $properties = [])
+    public function getIterator() : Iterator
     {
-        $this->className = $className;
-        $this->properties = $properties;
-        $this->namingStrategy = new DirectNaming();
+        return new ArrayIterator($this->getProperties());
     }
 
-    public function addProperty(string $name, Type $type): void
+    public function getNamingStrategy() : NamingStrategy
     {
-        if ($type instanceof IdType) {
-            $this->id = $name;
+        if (null === $this->_namingStrategy) {
+            $this->_namingStrategy = new DirectNaming();
         }
 
-        $this->properties[$name] = $type;
+        return $this->_namingStrategy;
     }
 
-    public function hasProperty(string $name): bool
+    public function getProperties() : array
     {
-        return isset($this->properties[$name]);
+        if (empty($this->_properties)) {
+            $this->build();
+        }
+
+        return $this->_properties;
     }
 
-    public function setNamingStrategy(NamingStrategy $namingStrategy): void
+    public function count() : int
     {
-        $this->namingStrategy = $namingStrategy;
+        return count($this->getProperties());
     }
 
-    public function getNamingStrategy(): NamingStrategy
+    private function build() : void
     {
-        return $this->namingStrategy;
+        $properties = get_object_vars($this);
+        foreach ($properties as $name => $type) {
+            if (!$type instanceof Type) {
+                continue;
+            }
+            $this->_properties[$name] = $type;
+        }
     }
 
-    /**
-     * @return Type[]
-     */
-    public function getIterator(): Traversable
-    {
-        return new ArrayIterator($this->properties);
-    }
-
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
-    public function hasId(): bool
-    {
-        return $this->id !== null;
-    }
-
-    public function getClass(): string
-    {
-        return $this->className;
-    }
-
-    public function count(): int
-    {
-        return count($this->properties);
-    }
+    abstract public function getTargetClass() : string;
 }

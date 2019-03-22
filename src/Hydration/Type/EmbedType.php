@@ -2,6 +2,10 @@
 
 namespace FatCode\Storage\Hydration\Type;
 
+use DateTime;
+use DateTimeInterface;
+use FatCode\Storage\Exception\TypeException;
+
 class EmbedType implements Type, NullableType
 {
     use Nullable;
@@ -10,21 +14,25 @@ class EmbedType implements Type, NullableType
 
     public function __construct(string $class)
     {
-        $this->class = $class;
+        if (!class_exists($class)) {
+            throw TypeException::forUnknownEmbedClass();
+        }
     }
 
-    public function getClass(): string
+    public function hydrate($value): DateTimeInterface
     {
-        return $this->class;
+        $date = DateTime::createFromFormat($this->format, (string) $value);
+        $date->setTime(0, 0,0);
+
+        return $date;
     }
 
-    public function hydrate($value)
+    public function extract($value): ?string
     {
-        return $value;
-    }
+        if ($value instanceof DateTimeInterface) {
+            return $value->format($this->format);
+        }
 
-    public function extract($value)
-    {
-        return $value;
+        return null;
     }
 }

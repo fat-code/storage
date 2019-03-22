@@ -1,10 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Stilus\Library\Exception;
+namespace FatCode\Storage\Exception;
 
-use Stilus\Exception\RuntimeException;
-
-class SchemaException extends \RuntimeException implements RuntimeException
+class SchemaException extends StorageException
 {
     public static function forMissingIdentifier(string $class): self
     {
@@ -14,5 +12,10 @@ class SchemaException extends \RuntimeException implements RuntimeException
     public static function forMissingProperty(string $class, string $property): self
     {
         return new self("Schema definition for {$class} contains no {$property} property.");
+    }
+
+    public static function forUndefinedSchema(string $class) : self
+    {
+        return new self("Schema definition for {$class} could not be loaded.");
     }
 }

@@ -5,17 +5,14 @@ namespace FatCode\Storage\Hydration;
 use DateTimeZone;
 use FatCode\Storage\Exception\TypeException;
 use FatCode\Storage\Hydration\Type\BooleanType;
-use FatCode\Storage\Hydration\Type\EmbedType;
 use FatCode\Storage\Hydration\Type\DateTimeType;
 use FatCode\Storage\Hydration\Type\DateType;
 use FatCode\Storage\Hydration\Type\DecimalType;
-use FatCode\Storage\Hydration\Type\EmbedManyType;
 use FatCode\Storage\Hydration\Type\FloatType;
 use FatCode\Storage\Hydration\Type\IdType;
 use FatCode\Storage\Hydration\Type\IntegerType;
 use FatCode\Storage\Hydration\Type\StringType;
 use FatCode\Storage\Hydration\Type\Type as BaseType;
-use FatCode\Storage\Hydration\Type\ValueObjectType;
 use ReflectionClass;
 
 /**
@@ -34,13 +31,9 @@ final class Type
         'string' => StringType::class,
         'float' => FloatType::class,
         'id' => IdType::class,
-        'valueObject' => ValueObjectType::class,
         'decimal' => DecimalType::class,
         'date' => DateType::class,
         'dateTime' => DateTimeType::class,
-        'custom' => EmbedType::class,
-        'embed' => EmbedType::class,
-        'embedMany' => EmbedManyType::class,
     ];
 
     private function __construct()
@@ -48,7 +41,7 @@ final class Type
         // Prevent for instantiation this class
     }
 
-    public static function int(): IntegerType
+    public static function integer() : IntegerType
     {
         static $type;
         if ($type === null) {
@@ -57,7 +50,7 @@ final class Type
         return $type;
     }
 
-    public static function string(): StringType
+    public static function string() : StringType
     {
         static $type;
         if ($type === null) {
@@ -66,7 +59,7 @@ final class Type
         return $type;
     }
 
-    public static function float(): FloatType
+    public static function float() : FloatType
     {
         static $type;
         if ($type === null) {
@@ -75,7 +68,7 @@ final class Type
         return $type;
     }
 
-    public static function bool(): BooleanType
+    public static function bool() : BooleanType
     {
         static $type;
         if ($type === null) {
@@ -84,7 +77,7 @@ final class Type
         return $type;
     }
 
-    public static function id(): IdType
+    public static function id() : IdType
     {
         static $type;
         if ($type === null) {
@@ -93,37 +86,22 @@ final class Type
         return $type;
     }
 
-    public static function decimal(int $scale = 2, int $precision = 10): DecimalType
+    public static function decimal(int $scale = 2, int $precision = 10) : DecimalType
     {
         return new DecimalType($scale, $precision);
     }
 
-    public static function date(string $format = 'Ymd'): DateType
+    public static function date(string $format = 'Ymd') : DateType
     {
         return new DateType($format);
     }
 
-    public static function dateTime(DateTimeZone $defaultTimeZone = null): DateTimeType
+    public static function dateTime(DateTimeZone $defaultTimeZone = null) : DateTimeType
     {
         return new DateTimeType($defaultTimeZone);
     }
 
-    public static function valueObject(string $class): ValueObjectType
-    {
-        return new ValueObjectType($class);
-    }
-
-    public static function embed(string $class): EmbedType
-    {
-        return new EmbedType($class);
-    }
-
-    public static function embedMany(string $class): EmbedManyType
-    {
-        return new EmbedManyType($class);
-    }
-
-    public static function registerType(string $name, string $class): void
+    public static function registerType(string $name, string $class) : void
     {
         if (!is_subclass_of($class, Type::class)) {
             throw TypeException::forInvalidTypeRegister($class);
@@ -132,7 +110,7 @@ final class Type
         self::$types[$name] = $class;
     }
 
-    public static function __callStatic($name, $arguments): BaseType
+    public static function __callStatic($name, $arguments) : BaseType
     {
         if (!isset(self::$types[$name])) {
             throw TypeException::forUnknownType($name);

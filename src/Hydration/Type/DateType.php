@@ -18,7 +18,10 @@ class DateType implements Type, NullableType
 
     public function hydrate($value): DateTimeInterface
     {
-        return DateTime::createFromFormat($this->format, $value);
+        $date = DateTime::createFromFormat($this->format, (string) $value);
+        $date->setTime(0, 0,0);
+
+        return $date;
     }
 
     public function extract($value): ?string
