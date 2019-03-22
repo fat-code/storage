@@ -6,6 +6,7 @@ use ArrayIterator;
 use Countable;
 use FatCode\Storage\Hydration\NamingStrategy\DirectNaming;
 use FatCode\Storage\Hydration\NamingStrategy\NamingStrategy;
+use FatCode\Storage\Hydration\Type\IdType;
 use FatCode\Storage\Hydration\Type\Type;
 use Iterator;
 use IteratorAggregate;
@@ -15,6 +16,7 @@ abstract class Schema implements IteratorAggregate, Countable
 {
     private $_properties = [];
     private $_namingStrategy;
+    private $_idProperty;
 
     public function getIterator() : Iterator
     {
@@ -28,6 +30,16 @@ abstract class Schema implements IteratorAggregate, Countable
         }
 
         return $this->_namingStrategy;
+    }
+
+    public function definesId() : bool
+    {
+        return null !== $this->_idProperty;
+    }
+
+    public function getIdName() : string
+    {
+        return $this->_idProperty;
     }
 
     public function getProperties() : array
@@ -50,6 +62,9 @@ abstract class Schema implements IteratorAggregate, Countable
         foreach ($properties as $name => $type) {
             if (!$type instanceof Type) {
                 continue;
+            }
+            if ($type instanceof IdType) {
+                $this->_idProperty = $name;
             }
             $this->_properties[$name] = $type;
         }

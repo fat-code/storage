@@ -8,11 +8,13 @@ use FatCode\Storage\Hydration\Type\BooleanType;
 use FatCode\Storage\Hydration\Type\DateTimeType;
 use FatCode\Storage\Hydration\Type\DateType;
 use FatCode\Storage\Hydration\Type\DecimalType;
+use FatCode\Storage\Hydration\Type\EmbedType;
 use FatCode\Storage\Hydration\Type\FloatType;
 use FatCode\Storage\Hydration\Type\IdType;
 use FatCode\Storage\Hydration\Type\IntegerType;
 use FatCode\Storage\Hydration\Type\StringType;
 use FatCode\Storage\Hydration\Type\Type as BaseType;
+use FatCode\Storage\Schema;
 use ReflectionClass;
 
 /**
@@ -94,6 +96,11 @@ final class Type
     public static function date(string $format = 'Ymd') : DateType
     {
         return new DateType($format);
+    }
+
+    public static function embed(Schema $schema) : EmbedType
+    {
+        return new EmbedType($schema);
     }
 
     public static function dateTime(DateTimeZone $defaultTimeZone = null) : DateTimeType

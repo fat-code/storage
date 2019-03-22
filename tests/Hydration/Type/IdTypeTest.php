@@ -11,15 +11,11 @@ final class IdTypeTest extends TestCase
     {
         $type = new IdType();
         self::assertSame(1, $type->extract(1));
-        self::assertSame('id', $type->getLocalName());
-        self::assertSame('_id', $type->getExternalName());
     }
 
     public function testHydrate() : void
     {
         $type = new IdType('id', 'id');
         self::assertEquals(1, $type->hydrate(1));
-        self::assertSame('id', $type->getLocalName());
-        self::assertSame('id', $type->getExternalName());
     }
 }

@@ -23,7 +23,20 @@ final class UserSchema extends Schema
         $this->favouriteNumber = Type::decimal();
         $this->language = Type::string();
         $this->email = Type::string();
-        $this->wallet = Type::string();
+        $this->wallet = Type::embed(new class extends Schema {
+            protected $currency;
+            protected $amount;
+            public function __construct()
+            {
+                $this->currency = Type::string();
+                $this->amount = Type::decimal();
+            }
+
+            public function getTargetClass(): string
+            {
+                return UserWallet::class;
+            }
+        });
         $this->eyeColor = Type::string();
         $this->notListed = Type::string();
     }

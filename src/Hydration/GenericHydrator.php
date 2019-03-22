@@ -5,36 +5,27 @@ namespace FatCode\Storage\Hydration;
 use Closure;
 use FatCode\Storage\Exception\HydrationException;
 use FatCode\Storage\Hydration\Type\CompositeType;
-use FatCode\Storage\Hydration\Type\EmbedManyType;
-use FatCode\Storage\Hydration\Type\EmbedType;
 use FatCode\Storage\Hydration\Type\NullableType;
+use FatCode\Storage\Schema;
 use Throwable;
 
 trait GenericHydrator
 {
+    /**
+     * @var IdentityMap
+     */
     protected $identityMap;
-    protected $schemaManager;
 
-    protected function setIdentityMap(IdentityMap $identityMap)
+    public function setIdentityMap(IdentityMap $identityMap)
     {
         $this->identityMap = $identityMap;
     }
 
-    public function hydrate(array $input, object $object = null): object
+    private function hydrateObject(Schema $schema, array $input, object $object) : object
     {
-        if ($object === null) {
-            throw HydrationException::forNullHydration();
-        }
-
-        return $this->hydrateObject($input, $object);
-    }
-
-    protected function hydrateObject(array $input, object $object) : object
-    {
-        $schema = SchemaManager::get($object);
         $id = null;
-        if ($schema->hasId()) {
-            $idField = $schema->getNamingStrategy()->map($schema->getId());
+        if ($schema->definesId()) {
+            $idField = $schema->getNamingStrategy()->map($schema->getIdName());
             if (isset($input[$idField])) {
                 $id = $input[$idField];
             }
@@ -62,33 +53,6 @@ trait GenericHydrator
                 $value = $input[$namingStrategy->map($property)] ?? null;
 
                 if ($value === null && $type instanceof NullableType && $type->isNullable()) {
-                    continue;
-                }
-
-                if ($type instanceof EmbedType) {
-                    $this->writeProperty(
-                        $object,
-                        $property,
-                        $this->hydrateObject(
-                            $value,
-                            Instantiator::instantiate($type->getClass())
-                        )
-                    );
-                    continue;
-                }
-
-                if ($type instanceof EmbedManyType) {
-                    $values = [];
-                    if (is_iterable($value)) {
-                        foreach ($value as $item) {
-                            $values[] = $this->hydrateObject(
-                                $item,
-                                Instantiator::instantiate($type->getClass())
-                            );
-                        }
-                    }
-
-                    $this->writeProperty($object, $property, $values);
                     continue;
                 }
 

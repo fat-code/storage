@@ -2,37 +2,40 @@
 
 namespace FatCode\Storage\Hydration\Type;
 
-use DateTime;
-use DateTimeInterface;
-use FatCode\Storage\Exception\TypeException;
+use FatCode\Storage\Exception\HydrationException;
+use FatCode\Storage\Hydration\GenericHydrator;
+use FatCode\Storage\Hydration\Hydrator;
+use FatCode\Storage\Hydration\Instantiator;
+use FatCode\Storage\Schema;
 
 class EmbedType implements Type, NullableType
 {
-    use Nullable;
-
-    private $class;
-
-    public function __construct(string $class)
-    {
-        if (!class_exists($class)) {
-            throw TypeException::forUnknownEmbedClass();
-        }
+    use Nullable, GenericHydrator {
+        hydrateObject as private hydrateObject;
     }
 
-    public function hydrate($value): DateTimeInterface
-    {
-        $date = DateTime::createFromFormat($this->format, (string) $value);
-        $date->setTime(0, 0,0);
+    private $schema;
 
-        return $date;
+    public function __construct(Schema $schema)
+    {
+        $this->schema = $schema;
     }
 
-    public function extract($value): ?string
+    public function hydrate($value) : object
     {
-        if ($value instanceof DateTimeInterface) {
-            return $value->format($this->format);
+        $object = Instantiator::instantiate($this->schema->getTargetClass());
+        return $this->hydrateObject($this->schema, $value, $object);
+    }
+
+    public function extract($value) : ?array
+    {
+        if ($value === null) {
+            if ($this->nullable) {
+                return null;
+            }
+            throw HydrationException::forUnallowedNullable();
         }
 
-        return null;
+        return [];
     }
 }

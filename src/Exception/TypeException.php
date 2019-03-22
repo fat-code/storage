@@ -19,5 +19,11 @@ class TypeException extends StorageException
 
     public static function forInvalidTypeRegister(string $type): self
     {
+        return new self("Registered type {$type} does not implement required" . Type::class . ' interface');
+    }
+
+    public static function forUnknownEmbedClass(string $class) : self
+    {
+        return new self("Cannot use {$class} as embedded type, class not found.");
     }
 }
