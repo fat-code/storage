@@ -4,15 +4,12 @@ namespace FatCode\Storage\Hydration\Type;
 
 use FatCode\Storage\Exception\HydrationException;
 use FatCode\Storage\Hydration\GenericHydrator;
-use FatCode\Storage\Hydration\Hydrator;
 use FatCode\Storage\Hydration\Instantiator;
 use FatCode\Storage\Schema;
 
 class EmbedType implements Type, NullableType
 {
-    use Nullable, GenericHydrator {
-        hydrateObject as private hydrateObject;
-    }
+    use Nullable, GenericHydrator;
 
     private $schema;
 

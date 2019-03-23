@@ -18,7 +18,7 @@ final class User
         $this->wallet = $wallet;
     }
 
-    public function getName(): UserName
+    public function getName() : UserName
     {
         return $this->name;
     }
@@ -43,7 +43,7 @@ final class User
         return $this->email;
     }
 
-    public function getWallet(): UserWallet
+    public function getWallet() : UserWallet
     {
         return $this->wallet;
     }

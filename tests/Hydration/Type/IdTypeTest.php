@@ -15,7 +15,7 @@ final class IdTypeTest extends TestCase
 
     public function testHydrate() : void
     {
-        $type = new IdType('id', 'id');
+        $type = new IdType();
         self::assertEquals(1, $type->hydrate(1));
     }
 }

@@ -18,7 +18,21 @@ final class UserSchema extends Schema
 
     public function __construct()
     {
-        $this->name = Type::string();
+        $this->name = Type::embed(new class extends Schema {
+            protected $firstName;
+            protected $lastName;
+
+            public function __construct()
+            {
+                $this->firstName = Type::string();
+                $this->lastName = Type::string();
+            }
+
+            public function getTargetClass(): string
+            {
+                return UserName::class;
+            }
+        });
         $this->age = Type::integer();
         $this->favouriteNumber = Type::decimal();
         $this->language = Type::string();

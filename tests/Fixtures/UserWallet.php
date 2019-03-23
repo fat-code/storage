@@ -12,4 +12,14 @@ final class UserWallet
         $this->currency = $currency;
         $this->amount = $amount;
     }
+
+    public function getCurrency(): string
+    {
+        return $this->currency;
+    }
+
+    public function getAmount(): string
+    {
+        return $this->amount;
+    }
 }

@@ -7,9 +7,14 @@ use FatCode\Storage\Driver\MongoDb\Collation;
 use FatCode\Storage\Driver\MongoDb\Command\Operation\Join;
 use FatCode\Storage\Driver\MongoDb\MongoCommand;
 use FatCode\Storage\Driver\MongoDb\Command\Operation\FindOperation;
+
 use function array_filter;
 use function count;
 
+/**
+ * The Find commands performs a query within given collection and creates cursor with id and first batch of results.
+ * @see https://docs.mongodb.com/manual/reference/command/find/
+ */
 final class Find extends MongoCommand
 {
     private $collection;
@@ -30,12 +35,12 @@ final class Find extends MongoCommand
         $this->useAggregation = count(array_filter($options, $hasJoin)) >= 1;
     }
 
-    public function setCollation(Collation $collation): void
+    public function setCollation(Collation $collation) : void
     {
         $this->collation = $collation;
     }
 
-    public function execute(callable $handler, Connection $connection): void
+    public function execute(callable $handler, Connection $connection) : void
     {
         if ($this->useAggregation) {
             (new Aggregate($this->collection, ...$this->options))->execute($handler, $connection);

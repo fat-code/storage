@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace FatCode\Tests\Storage;
+namespace FatCode\Tests\Storage\Hydration;
 
 use FatCode\Storage\Hydration\NamingStrategy\NamingStrategy;
 use FatCode\Storage\Hydration\Type\IntegerType;
