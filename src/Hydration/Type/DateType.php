@@ -19,7 +19,7 @@ class DateType implements Type, NullableType
     public function hydrate($value): DateTimeInterface
     {
         $date = DateTime::createFromFormat($this->format, (string) $value);
-        $date->setTime(0, 0,0);
+        $date->setTime(0, 0, 0);
 
         return $date;
     }
