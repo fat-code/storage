@@ -7,6 +7,7 @@ use FatCode\Storage\Exception\HydrationException;
 use FatCode\Storage\Hydration\Type\CompositeType;
 use FatCode\Storage\Hydration\Type\NullableType;
 use Throwable;
+use FatCode\Storage\Hydration\Type\Type;
 
 trait GenericHydrator
 {
@@ -36,29 +37,34 @@ trait GenericHydrator
 
         $namingStrategy = $schema->getNamingStrategy();
 
-        try {
-            /** @var Type $type */
-            foreach ($schema as $property => $type) {
-                if ($type instanceof CompositeType) {
-                    $values = [];
-                    foreach ($type->getKeys($property) as $key) {
-                        $mappedKey = $namingStrategy->map($key);
-                        $values[] = $input[$mappedKey] ?? null;
+        /** @var Type $type */
+        foreach ($schema as $property => $type) {
+            if ($type instanceof CompositeType) {
+                $values = [];
+                foreach ($type->getKeys($property) as $key) {
+                    $mappedKey = $namingStrategy->map($key);
+                    $values[] = $input[$mappedKey] ?? null;
+                }
+                if (in_array(null, $values, true)) {
+                    if (!$type->isNullable()) {
+                        throw HydrationException::forNullHydration($schema, $property);
                     }
-                    $this->writeProperty($object, $property, $type->hydrate($values));
+                    $this->writeProperty($object, $property, null);
                     continue;
                 }
-
-                $value = $input[$namingStrategy->map($property)] ?? null;
-
-                if ($value === null && $type instanceof NullableType && $type->isNullable()) {
-                    continue;
-                }
-
-                $this->writeProperty($object, $property, $type->hydrate($value));
+                $this->writeProperty($object, $property, $type->hydrate($values));
+                continue;
             }
-        } catch (Throwable $throwable) {
-            throw HydrationException::forHydrationError($object, $throwable->getMessage());
+
+            $value = $input[$namingStrategy->map($property)] ?? null;
+            if ($value === null) {
+                if (!$type instanceof NullableType || !$type->isNullable()) {
+                    throw HydrationException::forNullHydration($schema, $property);
+                }
+                continue;
+            }
+
+            $this->writeProperty($object, $property, $type->hydrate($value));
         }
 
         if ($this->identityMap && $id) {

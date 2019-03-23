@@ -15,11 +15,13 @@ final class UserSchema extends Schema
     protected $email;
     protected $wallet;
     protected $eyeColor;
+    protected $creationTime;
     private $notListed;
 
     public function __construct()
     {
         $this->id = Type::id();
+        $this->creationTime = Type::dateTime();
         $this->name = Type::embed(new class extends Schema {
             protected $firstName;
             protected $lastName;
@@ -36,8 +38,8 @@ final class UserSchema extends Schema
             }
         });
         $this->age = Type::integer();
-        $this->favouriteNumber = Type::decimal();
-        $this->language = Type::string();
+        $this->favouriteNumber = Type::decimal()->nullable();
+        $this->language = Type::string()->nullable();
         $this->email = Type::string();
         $this->wallet = Type::embed(new class extends Schema {
             protected $currency;

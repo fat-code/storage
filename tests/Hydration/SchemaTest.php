@@ -17,7 +17,7 @@ final class SchemaTest extends TestCase
         $schema = new UserSchema();
         $properties = $schema->getProperties();
 
-        self::assertCount(8, $schema);
+        self::assertCount(9, $schema);
         self::assertInstanceOf(IdType::class, $properties['id']);
         self::assertInstanceOf(StringType::class, $properties['language']);
         self::assertInstanceOf(StringType::class, $properties['email']);

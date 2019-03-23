@@ -34,20 +34,21 @@ abstract class Schema implements IteratorAggregate, Countable
 
     public function definesId() : bool
     {
+        $this->build();
         return null !== $this->_idProperty;
     }
 
     public function getIdName() : string
     {
+        if (!$this->definesId()) {
+            return '';
+        }
         return $this->_idProperty;
     }
 
     public function getProperties() : array
     {
-        if (empty($this->_properties)) {
-            $this->build();
-        }
-
+        $this->build();
         return $this->_properties;
     }
 
@@ -58,6 +59,10 @@ abstract class Schema implements IteratorAggregate, Countable
 
     private function build() : void
     {
+        if (!empty($this->_properties)) {
+            return;
+        }
+
         $properties = get_object_vars($this);
         foreach ($properties as $name => $type) {
             if (!$type instanceof Type) {

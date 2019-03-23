@@ -6,12 +6,11 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
 
-class DateTimeType implements CompositeType, NullableType
+class DateTimeType implements CompositeType
 {
     use Nullable;
     
     private const DATE_PART = 'Date';
-    private const TIME_PART = 'Time';
     private const TIMEZONE_PART = 'Timezone';
 
     private $defaultTimezone;
@@ -23,10 +22,8 @@ class DateTimeType implements CompositeType, NullableType
 
     public function hydrate($value): DateTimeInterface
     {
-        return new DateTimeImmutable(
-            "@{$value[0]}",
-            isset($value[1]) ? new DateTimeZone($value[1]) : $this->defaultTimezone
-        );
+        $time = new DateTimeImmutable("@{$value[0]}");
+        return $time->setTimezone(isset($value[1]) ? new DateTimeZone($value[1]) : $this->defaultTimezone);
     }
 
     /**
@@ -49,7 +46,6 @@ class DateTimeType implements CompositeType, NullableType
     {
         return [
             $prefix . self::DATE_PART,
-            $prefix . self::TIME_PART,
             $prefix . self::TIMEZONE_PART,
         ];
     }

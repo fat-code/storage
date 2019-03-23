@@ -7,6 +7,7 @@ use FatCode\Tests\Storage\Fixtures\User;
 use FatCode\Tests\Storage\Fixtures\UserName;
 use FatCode\Tests\Storage\Fixtures\UserSchema;
 use FatCode\Tests\Storage\Fixtures\UserWallet;
+use MongoDB\BSON\ObjectId;
 use PHPUnit\Framework\TestCase;
 
 final class EmbedTypeTest extends TestCase
@@ -16,6 +17,7 @@ final class EmbedTypeTest extends TestCase
         $type = new EmbedType(new UserSchema());
         /** @var User $hydrated */
         $hydrated = $type->hydrate([
+            'id' => new ObjectId(),
             'name' => [
                 'firstName' => 'John',
                 'lastName' => 'Doe',
@@ -24,7 +26,9 @@ final class EmbedTypeTest extends TestCase
                 'amount' => '1000.20',
                 'currency' => 'EUR',
             ],
-            'age' => '15'
+            'age' => '15',
+            'creationTimeDate' => time(),
+            'creationTimeTimezone' => 'UTC',
         ]);
 
         self::assertInstanceOf(User::class, $hydrated);
