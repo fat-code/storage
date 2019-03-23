@@ -3,10 +3,11 @@
 namespace FatCode\Tests\Storage\Fixtures;
 
 use FatCode\Storage\Hydration\Type;
-use FatCode\Storage\Schema;
+use FatCode\Storage\Hydration\Schema;
 
 final class UserSchema extends Schema
 {
+    protected $id;
     protected $name;
     protected $age;
     protected $favouriteNumber;
@@ -18,6 +19,7 @@ final class UserSchema extends Schema
 
     public function __construct()
     {
+        $this->id = Type::id();
         $this->name = Type::embed(new class extends Schema {
             protected $firstName;
             protected $lastName;

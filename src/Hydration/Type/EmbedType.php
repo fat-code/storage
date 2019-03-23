@@ -5,7 +5,7 @@ namespace FatCode\Storage\Hydration\Type;
 use FatCode\Storage\Exception\HydrationException;
 use FatCode\Storage\Hydration\GenericHydrator;
 use FatCode\Storage\Hydration\Instantiator;
-use FatCode\Storage\Schema;
+use FatCode\Storage\Hydration\Schema;
 
 class EmbedType implements Type, NullableType
 {

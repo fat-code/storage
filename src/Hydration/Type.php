@@ -14,7 +14,6 @@ use FatCode\Storage\Hydration\Type\IdType;
 use FatCode\Storage\Hydration\Type\IntegerType;
 use FatCode\Storage\Hydration\Type\StringType;
 use FatCode\Storage\Hydration\Type\Type as BaseType;
-use FatCode\Storage\Schema;
 use ReflectionClass;
 
 /**

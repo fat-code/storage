@@ -3,6 +3,7 @@
 namespace FatCode\Tests\Storage\Hydration;
 
 use FatCode\Storage\Hydration\NamingStrategy\NamingStrategy;
+use FatCode\Storage\Hydration\Type\IdType;
 use FatCode\Storage\Hydration\Type\IntegerType;
 use FatCode\Storage\Hydration\Type\StringType;
 use FatCode\Storage\Hydration\Type\Type;
@@ -16,11 +17,13 @@ final class SchemaTest extends TestCase
         $schema = new UserSchema();
         $properties = $schema->getProperties();
 
-        self::assertCount(7, $schema);
+        self::assertCount(8, $schema);
+        self::assertInstanceOf(IdType::class, $properties['id']);
         self::assertInstanceOf(StringType::class, $properties['language']);
         self::assertInstanceOf(StringType::class, $properties['email']);
         self::assertInstanceOf(IntegerType::class, $properties['age']);
         self::assertInstanceOf(StringType::class, $properties['eyeColor']);
+        self::assertTrue($schema->definesId());
     }
 
     public function testIterateThroughSchema() : void

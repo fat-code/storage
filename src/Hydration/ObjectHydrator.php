@@ -1,13 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace FatCode\Storage;
+namespace FatCode\Storage\Hydration;
 
 use FatCode\Storage\Exception\SchemaException;
-use FatCode\Storage\Hydration\GenericHydrator;
-use FatCode\Storage\Hydration\Hydrator;
 
-use FatCode\Storage\Hydration\IdentityMap;
 use function in_array;
+use function get_class;
 
 final class ObjectHydrator implements Hydrator
 {
@@ -47,11 +45,7 @@ final class ObjectHydrator implements Hydrator
 
     public function hasSchema(string $class) : bool
     {
-        if (!isset($this->schemaRegistry[$class]) && !$this->loadSchema($class)) {
-            return false;
-        }
-
-        return true;
+        return isset($this->schemaRegistry[$class]) || $this->loadSchema($class);
     }
 
     public function getSchema(string $class) : Schema
