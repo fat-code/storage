@@ -7,10 +7,9 @@ use function get_class;
 
 class CursorException extends DriverException
 {
-    public static function forHydratorAlreadyAssigned(Cursor $cursor): self
+    public static function forOnFetchAlreadyAssigned(Cursor $cursor): self
     {
         $class = get_class($cursor);
-
-        throw new self("Hydrator for cursor {$class} has been already assigned.");
+        throw new self("Cursor {$class} has already assigned onFetch listener.");
     }
 }

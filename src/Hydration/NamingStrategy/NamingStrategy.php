@@ -5,18 +5,11 @@ namespace FatCode\Storage\Hydration\NamingStrategy;
 interface NamingStrategy
 {
     /**
-     * Converts given name so it can be hydrated by the Hydrator.
+     * Converts given name so it can be hydrated or extracted. Returned name should be valid name kept in your
+     * persistence layer.
      *
      * @param string $name
      * @return string
      */
-    public function hydrate(string $name) : string;
-
-    /**
-     * Converts given name so it can be extracted by the Extractor.
-     *
-     * @param string $name
-     * @return string
-     */
-    public function extract(string $name) : string;
+    public function map(string $name) : string;
 }

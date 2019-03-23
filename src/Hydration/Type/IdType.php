@@ -2,7 +2,7 @@
 
 namespace FatCode\Storage\Hydration\Type;
 
-class IdType implements NamedType
+class IdType implements Type
 {
     public function hydrate($value)
     {
@@ -12,15 +12,5 @@ class IdType implements NamedType
     public function extract($value)
     {
         return $value;
-    }
-
-    public function getLocalName(): string
-    {
-        return 'id';
-    }
-
-    public function getExternalName(): string
-    {
-        return '_id';
     }
 }

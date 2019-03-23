@@ -42,7 +42,7 @@
   "scripts": {
     "phpunit": "vendor/bin/phpunit --coverage-text",
     "phpcs": "vendor/bin/phpcs --standard=PSR12 --warning-severity=0 src",
-    "phpcbf": "vendor/bin/phpcbf --standard=PSR12 --warning-severity=0 src",
+    "phpcsf": "vendor/bin/phpcbf --standard=PSR12 --warning-severity=0 src",
     "psalm": "vendor/bin/psalm --show-info=false"
   },
   "repositories": [

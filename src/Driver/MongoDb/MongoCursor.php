@@ -2,15 +2,14 @@
 
 namespace FatCode\Storage\Driver\MongoDb;
 
-use FatCode\Storage\Driver\HydratingCursor;
-use IteratorIterator;
-use MongoDB\Driver\Cursor as MongoDBCursor;
 use FatCode\Storage\Driver\Command;
 use FatCode\Storage\Driver\Connection;
+use FatCode\Storage\Driver\Cursor;
 use FatCode\Storage\Exception\CursorException;
-use FatCode\Storage\Hydration\Hydrator;
+use IteratorIterator;
+use MongoDB\Driver\Cursor as MongoDBCursor;
 
-class MongoCursor implements HydratingCursor
+class MongoCursor implements Cursor
 {
     /**
      * @var Connection
@@ -33,9 +32,9 @@ class MongoCursor implements HydratingCursor
     private $current;
 
     /**
-     * @var Hydrator
+     * @var callable
      */
-    private $hydrator;
+    private $onFetch;
 
     /**
      * @var IteratorIterator
@@ -77,18 +76,25 @@ class MongoCursor implements HydratingCursor
         return $this->connection;
     }
 
-    public function hydrateWith(Hydrator $hydrator): void
+    /**
+     * Customizes fetch operation with callable. Each time a record is retrieved from database
+     * its contents get passed to callable and result of that callable is assigned as value to
+     * current item.
+     *
+     * @param callable $callable
+     */
+    public function onFetch(callable $callable) : void
     {
-        if ($this->hydrator) {
-            throw CursorException::forHydratorAlreadyAssigned($this);
+        if ($this->onFetch) {
+            throw CursorException::forOnFetchAlreadyAssigned($this);
         }
 
-        $this->hydrator = $hydrator;
+        $this->onFetch = $callable;
         // Because cursor is started before hydration is assigned first record will be
-        // already assigned to the current property. To provide seemless hydrator
-        // integration we have to hydrate the element once hydrator is passed
+        // already assigned to the current property. To provide seemless operation (like hydration)
+        // integration we have to override first element with result of callable.
         if (is_array($this->current)) {
-            $this->current = $hydrator->hydrate($this->current);
+            $this->current = $callable($this->current);
         }
     }
 
@@ -143,8 +149,8 @@ class MongoCursor implements HydratingCursor
     private function fetch()
     {
         $fetched = $this->cursorIterator->current();
-        if ($this->hydrator && $fetched !== null) {
-            $fetched = $this->hydrator->hydrate($fetched);
+        if ($this->onFetch && $fetched !== null) {
+            $fetched = ($this->onFetch)($fetched);
         }
 
         return $fetched;

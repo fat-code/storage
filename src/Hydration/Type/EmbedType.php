@@ -2,29 +2,37 @@
 
 namespace FatCode\Storage\Hydration\Type;
 
+use FatCode\Storage\Exception\HydrationException;
+use FatCode\Storage\Hydration\GenericHydrator;
+use FatCode\Storage\Hydration\Instantiator;
+use FatCode\Storage\Hydration\Schema;
+
 class EmbedType implements Type, NullableType
 {
-    use Nullable;
+    use Nullable, GenericHydrator;
 
-    private $class;
+    private $schema;
 
-    public function __construct(string $class)
+    public function __construct(Schema $schema)
     {
-        $this->class = $class;
+        $this->schema = $schema;
     }
 
-    public function getClass(): string
+    public function hydrate($value) : object
     {
-        return $this->class;
+        $object = Instantiator::instantiate($this->schema->getTargetClass());
+        return $this->hydrateObject($this->schema, $value, $object);
     }
 
-    public function hydrate($value)
+    public function extract($value) : ?array
     {
-        return $value;
-    }
+        if ($value === null) {
+            if ($this->nullable) {
+                return null;
+            }
+            throw HydrationException::forUnallowedNullable();
+        }
 
-    public function extract($value)
-    {
-        return $value;
+        return [];
     }
 }

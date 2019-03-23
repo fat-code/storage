@@ -2,12 +2,11 @@
 
 namespace FatCode\Storage\Exception;
 
-use MongoDB\BSON\ObjectId;
 use RuntimeException;
 
 class IdentityMapException extends RuntimeException
 {
-    public static function forMissingObject(ObjectId $id): self
+    public static function forMissingObject($id) : self
     {
         return new self("Could not retrieve object with {$id}");
     }

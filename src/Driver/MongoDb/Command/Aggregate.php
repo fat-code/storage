@@ -7,6 +7,10 @@ use FatCode\Storage\Driver\MongoDb\Collation;
 use FatCode\Storage\Driver\MongoDb\Command\Operation\PipelineOperation;
 use FatCode\Storage\Driver\MongoDb\MongoCommand;
 
+/**
+ * Performs aggregation tasks such as group using the aggregation framework.
+ * @see https://docs.mongodb.com/manual/reference/command/nav-aggregation/
+ */
 final class Aggregate extends MongoCommand
 {
     private $collection;
