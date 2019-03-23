@@ -2,6 +2,7 @@
 
 namespace FatCode\Storage\Exception;
 
+use FatCode\Storage\Hydration\Schema;
 use RuntimeException;
 
 class HydrationException extends RuntimeException
@@ -26,9 +27,9 @@ class HydrationException extends RuntimeException
         return new self("Could not extract, expected instance of {$expected}, {$passed} passed instead.");
     }
 
-    public static function forNullHydration(): self
+    public static function forNullHydration(Schema $schema, string $property): self
     {
-        return new self("Could not hydrate instance of null. Generic hydrator requires an instance to be passed.");
+        return new self("Could not hydrate `{$property}` for {$schema->getTargetClass()}, expected non null value, got null. Did you forget to make this field nullable?");
     }
 
     public static function forHydrationError(object $object, string $message): self

@@ -2,7 +2,7 @@
 
 namespace FatCode\Storage\Hydration\Type;
 
-interface CompositeType extends Type
+interface CompositeType extends NullableType
 {
     public function getKeys(string $prefix) : array;
 }

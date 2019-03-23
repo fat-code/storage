@@ -37,8 +37,7 @@ final class DateTimeTypeTest extends TestCase
         $keys = $type->getKeys('test');
 
         self::assertSame('testDate', $keys[0]);
-        self::assertSame('testTime', $keys[1]);
-        self::assertSame('testTimezone', $keys[2]);
+        self::assertSame('testTimezone', $keys[1]);
     }
 
     public function testNullable() : void

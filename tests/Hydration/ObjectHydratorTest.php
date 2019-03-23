@@ -11,6 +11,7 @@ use FatCode\Tests\Storage\Fixtures\User;
 use FatCode\Tests\Storage\Fixtures\UserName;
 use FatCode\Tests\Storage\Fixtures\UserSchema;
 use FatCode\Tests\Storage\Fixtures\UserWallet;
+use MongoDB\BSON\ObjectId;
 use PHPUnit\Framework\TestCase;
 
 final class ObjectHydratorTest extends TestCase
@@ -55,9 +56,10 @@ final class ObjectHydratorTest extends TestCase
     {
         $objectHydrator = new ObjectHydrator();
         $objectHydrator->addSchema(new UserSchema());
-
+        $id = new ObjectId();
         $user = $objectHydrator->hydrate(
             [
+                'id' => $id,
                 'name' => [
                     'firstName' => 'John',
                     'lastName' => 'Doe',
@@ -66,7 +68,9 @@ final class ObjectHydratorTest extends TestCase
                     'amount' => '1000.20',
                     'currency' => 'EUR',
                 ],
-                'age' => '15'
+                'age' => '15',
+                'creationTimeDate' => time(),
+                'creationTimeTimezone' => 'Europe/Berlin',
             ],
             Instantiator::instantiate(User::class)
         );
@@ -79,5 +83,14 @@ final class ObjectHydratorTest extends TestCase
         self::assertInstanceOf(UserName::class, $user->getName());
         self::assertSame('John', $user->getName()->getFirstName());
         self::assertSame('Doe', $user->getName()->getLastName());
+
+        $userFromIdentityMap = $objectHydrator->hydrate(
+            [
+                'id' => $id,
+            ],
+            Instantiator::instantiate(User::class)
+        );
+
+        self::assertSame($user, $userFromIdentityMap);
     }
 }

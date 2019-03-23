@@ -2,6 +2,8 @@
 
 namespace FatCode\Tests\Storage\Fixtures;
 
+use DateTime;
+
 final class User
 {
     private $name;
@@ -11,11 +13,18 @@ final class User
     private $email;
     private $wallet;
     private $eyeColor;
+    private $creationTime;
 
     public function __construct(UserName $name, UserWallet $wallet)
     {
         $this->name = $name;
         $this->wallet = $wallet;
+        $this->creationTime = new DateTime();
+    }
+
+    public function getCreationTime(): DateTime
+    {
+        return $this->creationTime;
     }
 
     public function getName() : UserName
