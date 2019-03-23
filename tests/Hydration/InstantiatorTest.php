@@ -7,6 +7,7 @@ use FatCode\Storage\Hydration\Instantiator;
 use FatCode\Tests\Storage\Fixtures\User;
 use FatCode\Tests\Storage\Fixtures\UserName;
 use PHPUnit\Framework\TestCase;
+use SimpleXMLElement;
 
 final class InstantiatorTest extends TestCase
 {
@@ -21,5 +22,11 @@ final class InstantiatorTest extends TestCase
     {
         $this->expectException(HydrationException::class);
         Instantiator::instantiate('____NonExistingClass_____');
+    }
+
+    public function testFailInstantiationOnBuiltInClass() : void
+    {
+        $this->expectException(HydrationException::class);
+        Instantiator::instantiate(SimpleXMLElement::class);
     }
 }

@@ -15,7 +15,7 @@ trait GenericHydrator
      */
     protected $identityMap;
 
-    public function setIdentityMap(IdentityMap $identityMap)
+    public function setIdentityMap(IdentityMap $identityMap) : void
     {
         $this->identityMap = $identityMap;
     }
