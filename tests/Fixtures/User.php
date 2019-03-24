@@ -3,9 +3,11 @@
 namespace FatCode\Tests\Storage\Fixtures;
 
 use DateTime;
+use MongoDB\BSON\ObjectId;
 
 final class User
 {
+    private $id;
     private $name;
     private $age;
     private $favouriteNumber;
@@ -17,12 +19,18 @@ final class User
 
     public function __construct(UserName $name, UserWallet $wallet)
     {
+        $this->id = new ObjectId();
         $this->name = $name;
         $this->wallet = $wallet;
         $this->creationTime = new DateTime();
     }
 
-    public function getCreationTime(): DateTime
+    public function getId() : ObjectId
+    {
+        return $this->id;
+    }
+
+    public function getCreationTime() : DateTime
     {
         return $this->creationTime;
     }

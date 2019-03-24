@@ -3,13 +3,14 @@
 namespace FatCode\Storage\Hydration\Type;
 
 use FatCode\Storage\Exception\HydrationException;
+use FatCode\Storage\Hydration\GenericExtractor;
 use FatCode\Storage\Hydration\GenericHydrator;
 use FatCode\Storage\Hydration\Instantiator;
 use FatCode\Storage\Hydration\Schema;
 
 class EmbedType implements Type, NullableType
 {
-    use Nullable, GenericHydrator;
+    use Nullable, GenericHydrator, GenericExtractor;
 
     private $schema;
 
@@ -33,6 +34,6 @@ class EmbedType implements Type, NullableType
             throw HydrationException::forUnallowedNullable();
         }
 
-        return [];
+        return $this->extractObject($this->schema, $value);
     }
 }

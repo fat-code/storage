@@ -6,7 +6,6 @@ use Closure;
 use FatCode\Storage\Exception\HydrationException;
 use FatCode\Storage\Hydration\Type\CompositeType;
 use FatCode\Storage\Hydration\Type\NullableType;
-use Throwable;
 use FatCode\Storage\Hydration\Type\Type;
 
 trait GenericHydrator
