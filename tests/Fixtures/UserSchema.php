@@ -40,7 +40,7 @@ final class UserSchema extends Schema
         $this->age = Type::integer();
         $this->favouriteNumber = Type::decimal()->nullable();
         $this->language = Type::string()->nullable();
-        $this->email = Type::string();
+        $this->email = Type::string()->nullable();
         $this->wallet = Type::embed(new class extends Schema {
             protected $currency;
             protected $amount;
@@ -50,16 +50,16 @@ final class UserSchema extends Schema
                 $this->amount = Type::decimal();
             }
 
-            public function getTargetClass(): string
+            public function getTargetClass() : string
             {
                 return UserWallet::class;
             }
         });
-        $this->eyeColor = Type::string();
+        $this->eyeColor = Type::string()->nullable();
         $this->notListed = Type::string();
     }
 
-    public function getTargetClass(): string
+    public function getTargetClass() : string
     {
         return User::class;
     }

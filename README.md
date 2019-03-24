@@ -191,3 +191,107 @@ foreach ($cursor as $user) {
     $myUserList[] = $user;
 }
 ```
+
+## Hydration
+
+Hydration is a process of populating object from a set of data. Storage library provides mechanisms and interfaces
+for both hydrating and extracting data sets.
+
+### Schemas
+Before hydration can take place a schema object has to be defined.
+Schema is an object describing how dataset should be hydrated or extracted and its used by `\FatCode\Storage\Hydration\ObjectHydrator`.
+The following code defines example user class and its schema:
+```php
+<?php
+use FatCode\Storage\Hydration\Schema;
+use FatCode\Storage\Hydration\Type;
+
+class MyUser 
+{
+    private $id;
+    private $name;
+    private $age;
+    private $interests = [];
+}
+
+class MyUserSchema extends Schema
+{
+    protected $id;
+    protected $name;
+    protected $age;
+    protected $interests;
+    
+    public function __construct()
+    {
+        $this->id = Type::id();
+        $this->name = Type::string();
+        $this->age = Type::integer();
+        $this->interests = Type::array();
+    }
+    
+    public function getTargetClass() : string
+    {
+        return MyUser::class;
+    }
+}
+```
+
+### Object Hydrator
+
+`\FatCode\Storage\Hydration\ObjectHydrator` implements generic functionality for `\FatCode\Storage\Hydration\Hydrator` 
+and `\FatCode\Storage\Hydration\Extractor` to allow simple hydration/extraction of datasets.
+
+In order to hydrate or extract object, a schema must be recognized by ObjectHydrator, it can be achieved both ways:
+- by passing schema to `\FatCode\Storage\Hydration\ObjectHydrator::addSchema`
+- registering instance of `\FatCode\Storage\Hydration\SchemaLoader` in `\FatCode\Storage\Hydration\ObjectHydrator::addSchemaLoader`
+
+For now we will focus on the first one.
+
+### Registering schema in the `ObjectHydrator`
+```php
+<?php
+use FatCode\Storage\Hydration\ObjectHydrator;
+
+$objectHydrator = new ObjectHydrator();
+$objectHydrator->addSchema(new MyUserSchema());
+```
+
+The above code registers schema presented in the previous chapter. From this point on any instance of `MyUser` class can
+be hydrated or extracted.
+
+### Hydrating objects
+```php
+<?php
+use FatCode\Storage\Hydration\ObjectHydrator;
+use FatCode\Storage\Hydration\Instantiator;
+use MongoDB\BSON\ObjectId;
+
+$objectHydrator = new ObjectHydrator();
+$objectHydrator->addSchema(new MyUserSchema());
+
+// Hydration
+$bob = $objectHydrator->hydrate(
+    [
+        'id' => new ObjectId(),
+        'name' => 'Bob',
+        'age' => 30,
+        'interests' => ['Flowers', 'Judo', 'Milf$']
+    ], 
+    Instantiator::instantiate(MyUser::class)
+);
+```
+Because `hydrate` method requires instance of recognized class to be passed we used here `Instantiator::instatiate`,
+ which is convenient utility tool used to create empty instances of the passed class.
+ 
+### Extracting objects
+ 
+```php
+<?php
+use FatCode\Storage\Hydration\ObjectHydrator;
+
+$objectHydrator = new ObjectHydrator();
+$objectHydrator->addSchema(new MyUserSchema());
+// ...
+// lets reuse instance created in previous example
+$dataset = $objectHydrator->extract($bob);
+```
