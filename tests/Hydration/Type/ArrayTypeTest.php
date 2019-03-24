@@ -16,12 +16,22 @@ final class ArrayTypeTest extends TestCase
         self::assertEquals($exampleArray, $type->extract($exampleArray));
 
         $type = new ArrayType(SerializationMethod::SERIALIZE());
-        self::assertEquals($exampleArray, $type->extract(serialize($exampleArray)));
+        self::assertEquals(serialize($exampleArray), $type->extract($exampleArray));
+
+        $type = new ArrayType(SerializationMethod::JSON());
+        self::assertEquals(json_encode($exampleArray), $type->extract($exampleArray));
     }
 
     public function testHydrate() : void
     {
-        $type = new IdType();
-        self::assertEquals(1, $type->hydrate(1));
+        $type = new ArrayType();
+        $exampleArray = [1, 2, 3];
+        self::assertEquals($exampleArray, $type->hydrate($exampleArray));
+
+        $type = new ArrayType(SerializationMethod::SERIALIZE());
+        self::assertEquals($exampleArray, $type->hydrate(serialize($exampleArray)));
+
+        $type = new ArrayType(SerializationMethod::JSON());
+        self::assertEquals($exampleArray, $type->hydrate(json_encode($exampleArray)));
     }
 }

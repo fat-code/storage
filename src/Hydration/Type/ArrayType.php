@@ -17,7 +17,7 @@ class ArrayType implements Type
             case SerializationMethod::JSON:
                 return json_decode($value, true);
             case SerializationMethod::SERIALIZE:
-                return unserialize($value);
+                return unserialize($value, ['allowed_classes' => false]);
             case SerializationMethod::NONE:
             default:
                 return $value;

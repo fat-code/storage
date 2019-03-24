@@ -200,10 +200,11 @@ for both hydrating and extracting data sets.
 ### Schemas
 Before hydration can take place a schema object has to be defined.
 Schema is an object describing how dataset should be hydrated or extracted. 
-The following code defines example schema:
+The following code defines example user class and its schema:
 ```php
 <?php
 use FatCode\Storage\Hydration\Schema;
+use FatCode\Storage\Hydration\Type;
 
 class MyUser 
 {
@@ -215,9 +216,22 @@ class MyUser
 
 class MyUserSchema extends Schema
 {
+    protected $id;
+    protected $name;
+    protected $age;
+    protected $interests;
+    
+    public function __construct()
+    {
+        $this->id = Type::id();
+        $this->name = Type::string();
+        $this->age = Type::integer();
+        $this->interests = Type::array();
+    }
+    
     public function getTargetClass() : string
     {
- 
+        return MyUser::class;
     }
 }
 ```
