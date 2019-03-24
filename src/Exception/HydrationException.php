@@ -30,22 +30,19 @@ class HydrationException extends RuntimeException
     public static function forNullHydration(Schema $schema, string $property) : self
     {
         return new self("Could not hydrate `{$property}` for {$schema->getTargetClass()}," .
-            "expected non null value, got null. Did you forget to make this field nullable?"
-        );
+            "expected non null value, got null. Did you forget to make this field nullable?");
     }
 
     public static function forHydrationError(object $object, string $message) : self
     {
         $class = get_class($object);
         return new self("Could not hydrate instance of {$class}," .
-            "are you sure that name mapping is set correctly? Failure message: {$message}"
-        );
+            "are you sure that name mapping is set correctly? Failure message: {$message}");
     }
 
     public static function forUnallowedNullable() : self
     {
         return new self("Cannot extract/hydrate null value, field is not nullable." .
-            "Please set value or make field nullable."
-        );
+            "Please set value or make field nullable.");
     }
 }
