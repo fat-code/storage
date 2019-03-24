@@ -50,7 +50,7 @@ final class UserSchema extends Schema
                 $this->amount = Type::decimal();
             }
 
-            public function getTargetClass(): string
+            public function getTargetClass() : string
             {
                 return UserWallet::class;
             }
@@ -59,7 +59,7 @@ final class UserSchema extends Schema
         $this->notListed = Type::string();
     }
 
-    public function getTargetClass(): string
+    public function getTargetClass() : string
     {
         return User::class;
     }
