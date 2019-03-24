@@ -7,9 +7,9 @@ use FatCode\Storage\Exception\SchemaException;
 use function in_array;
 use function get_class;
 
-final class ObjectHydrator implements Hydrator
+final class ObjectHydrator implements Hydrator, Extractor
 {
-    use GenericHydrator;
+    use GenericHydrator, GenericExtractor;
 
     /** @var Schema[] */
     private $schemaRegistry = [];
@@ -25,9 +25,13 @@ final class ObjectHydrator implements Hydrator
     public function hydrate(array $hash, object $object) : object
     {
         $className = get_class($object);
-        $schema = $this->getSchema($className);
+        return $this->hydrateObject($this->getSchema($className), $hash, $object);
+    }
 
-        return $this->hydrateObject($schema, $hash, $object);
+    public function extract(object $object): array
+    {
+        $className = get_class($object);
+        return $this->extractObject($this->getSchema($className), $object);
     }
 
     public function addSchemaLoader(SchemaLoader $loader) : void

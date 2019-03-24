@@ -93,4 +93,36 @@ final class ObjectHydratorTest extends TestCase
 
         self::assertSame($user, $userFromIdentityMap);
     }
+
+    public function testExtract() : void
+    {
+        $user = new User(new UserName('John', 'Doe'), new UserWallet('USD', '10.00'));
+        $id = $user->getId();
+        $objectHydrator = new ObjectHydrator();
+        $objectHydrator->addSchema(new UserSchema());
+
+        $extracted = $objectHydrator->extract($user);
+
+        self::assertEquals(
+            [
+                'id' => $id,
+                'name' => [
+                    'firstName' => 'John',
+                    'lastName' => 'Doe',
+                ],
+                'age' => 0,
+                'favouriteNumber' => '0.00',
+                'language' => '',
+                'email' => '',
+                'wallet' => [
+                    'currency' => 'USD',
+                    'amount' => '10.00',
+                ],
+                'eyeColor' => '',
+                'creationTimeDate' => $user->getCreationTime()->getTimestamp(),
+                'creationTimeTimezone' => 'UTC',
+            ],
+            $extracted
+        );
+    }
 }
