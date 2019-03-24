@@ -48,7 +48,7 @@ final class Type
 
     public static function id() : IdType
     {
-       return new IdType();
+        return new IdType();
     }
 
     public static function array(SerializationMethod $method = null) : ArrayType
