@@ -191,3 +191,33 @@ foreach ($cursor as $user) {
     $myUserList[] = $user;
 }
 ```
+
+## Hydration
+
+Hydration is a process of populating object from a set of data. Storage library provides mechanisms and interfaces
+for both hydrating and extracting data sets.
+
+### Schemas
+Before hydration can take place a schema object has to be defined.
+Schema is an object describing how dataset should be hydrated or extracted. 
+The following code defines example schema:
+```php
+<?php
+use FatCode\Storage\Hydration\Schema;
+
+class MyUser 
+{
+    private $id;
+    private $name;
+    private $age;
+    private $interests = [];
+}
+
+class MyUserSchema extends Schema
+{
+    public function getTargetClass() : string
+    {
+ 
+    }
+}
+```
