@@ -6,24 +6,24 @@ interface UnitOfWork
 {
     /**
      * Returns already stored entity, entity is retrieved by id.
-     * @param string $entity
+     * @param string $entityClass
      * @param $id
-     * @return Storable
+     * @return object
      */
-    public function get(string $entity, $id) : Storable;
+    public function get(string $entityClass, $id) : object;
 
     /**
      * Adds entity(ies) for further save
      *
-     * @param Storable ...$entities
+     * @param object ...$entities
      */
-    public function persist(Storable ...$entities) : void;
+    public function persist(object ...$entities) : void;
 
     /**
      * Adds entity(ies) for further deletion
-     * @param Storable ...$entities
+     * @param object ...$entities
      */
-    public function remove(Storable ...$entities) : void;
+    public function remove(object ...$entities) : void;
 
     /**
      * Removes and saves previously added entities to the Unit
@@ -36,18 +36,18 @@ interface UnitOfWork
     public function rollback() : void;
 
     /**
-     * @param Storable ...$entities
+     * @param object ...$entities
      */
-    public function detach(Storable ...$entities) : void;
+    public function detach(object ...$entities) : void;
 
     /**
-     * @param Storable ...$entities
+     * @param object ...$entities
      */
-    public function attach(Storable ...$entities) : void;
+    public function attach(object ...$entities) : void;
 
     /**
-     * @param Storable $entity
+     * @param object $entity
      * @return bool
      */
-    public function contains(Storable $entity) : bool;
+    public function contains(object $entity) : bool;
 }

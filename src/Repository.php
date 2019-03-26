@@ -5,26 +5,31 @@ namespace FatCode\Storage;
 interface Repository
 {
     /**
-     * @param Id $id
-     * @return object|Storable
+     * @param mixed $id
+     * @return object
      */
-    public function get(Id $id): Storable;
+    public function get($id): object;
 
     /**
-     * @param Storable $entity
-     * @return Storable
+     * @param object ...$entity
+     * @return object
      */
-    public function create(Storable $entity): Storable;
+    public function create(object ...$entity): object;
 
     /**
-     * @param Storable $entity
-     * @return Storable
+     * @param object ...$entity
+     * @return object
      */
-    public function remove(Storable $entity): Storable;
+    public function remove(object ...$entity): object;
 
     /**
-     * @param Storable $entity
-     * @return Storable
+     * @param object ...$entity
+     * @return object
      */
-    public function update(Storable $entity): Storable;
+    public function update(object ...$entity): object;
+
+    /**
+     * @return string
+     */
+    public function getTargetClass() : string;
 }

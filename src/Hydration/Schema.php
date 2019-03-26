@@ -12,6 +12,9 @@ use Iterator;
 use IteratorAggregate;
 use function count;
 
+/**
+ * Schema is a description of an object used by hydrators and repositories.
+ */
 abstract class Schema implements IteratorAggregate, Countable
 {
     private $_properties = [];
@@ -73,6 +76,11 @@ abstract class Schema implements IteratorAggregate, Countable
             }
             $this->_properties[$name] = $type;
         }
+    }
+
+    public function getSource() : ?string
+    {
+        return null;
     }
 
     abstract public function getTargetClass() : string;
