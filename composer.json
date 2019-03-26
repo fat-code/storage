@@ -45,11 +45,5 @@
     "phpcs": "vendor/bin/phpcs --standard=PSR12 --warning-severity=0 src",
     "phpcsf": "vendor/bin/phpcbf --standard=PSR12 --warning-severity=0 src",
     "psalm": "vendor/bin/psalm --show-info=false"
-  },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/fat-code/enum"
-    }
-  ]
+  }
 }

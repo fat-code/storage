@@ -63,4 +63,9 @@ final class UserSchema extends Schema
     {
         return User::class;
     }
+
+    public function getSource() : ?string
+    {
+        return 'users';
+    }
 }
