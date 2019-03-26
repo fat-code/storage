@@ -5,6 +5,8 @@ namespace FatCode\Tests\Storage\Driver\MongoDB;
 use FatCode\Storage\Driver\MongoDb\MongoCollection;
 use FatCode\Storage\Exception\DriverException;
 use FatCode\Tests\Storage\Driver\MongoDB\Command\DatabaseHelpers;
+use FatCode\Tests\Storage\Fixtures\SimpleUser;
+use FatCode\Tests\Storage\Fixtures\UserName;
 use MongoDB\BSON\ObjectId;
 use PHPUnit\Framework\TestCase;
 
@@ -148,5 +150,20 @@ final class MongoCollectionTest extends TestCase
         $modified = $collection->findAndDelete([]);
 
         self::assertSame(10, $modified);
+    }
+
+    public function testHydratingCursor() : void
+    {
+        $this->generateUsers(100);
+        $collection = new MongoCollection($this->getConnection(), 'users');
+        $users = $collection->find();
+        $users->onFetch(function (array $user) {
+            // waliduje
+            return new SimpleUser(new UserName($user['name']['first'], $user['name']['last']), $user['email'], (int) $user['age']);
+        });
+
+        foreach ($users as $user) {
+            $a = 1;
+        }
     }
 }

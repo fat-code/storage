@@ -8,7 +8,7 @@ use FatCode\Storage\Hydration\Schema;
 final class UserSchema extends Schema
 {
     protected $id;
-    protected $name;
+    protected $name2;
     protected $age;
     protected $favouriteNumber;
     protected $language;
@@ -22,7 +22,7 @@ final class UserSchema extends Schema
     {
         $this->id = Type::id();
         $this->creationTime = Type::dateTime();
-        $this->name = Type::embed(new class extends Schema {
+        $this->name2 = Type::embed(new class extends Schema {
             protected $firstName;
             protected $lastName;
 

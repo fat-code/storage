@@ -2,6 +2,8 @@
 
 namespace FatCode\Tests\Storage\Fixtures;
 
+use MongoDB\BSON\ObjectId;
+
 final class UserName
 {
     private $firstName;

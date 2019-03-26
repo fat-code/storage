@@ -73,11 +73,14 @@ trait GenericHydrator
         return $object;
     }
 
-    protected function writeProperty(object $object, string $property, $value): void
+    protected function writeProperty(object $object, string $property, $value) : void
     {
         static $writer;
         if ($writer === null) {
             $writer = function ($name, $value) {
+                if (!property_exists($this, $name)) {
+                    throw new \Exception("Pole nie istnieje");
+                }
                 $this->$name = $value;
             };
         }

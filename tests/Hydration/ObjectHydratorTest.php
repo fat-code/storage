@@ -60,7 +60,7 @@ final class ObjectHydratorTest extends TestCase
         $user = $objectHydrator->hydrate(
             [
                 'id' => $id,
-                'name' => [
+                'name2' => [
                     'firstName' => 'John',
                     'lastName' => 'Doe',
                 ],
