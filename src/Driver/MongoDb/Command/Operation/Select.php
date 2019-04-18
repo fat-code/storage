@@ -13,12 +13,12 @@ class Select implements FindOperation, PipelineOperation
         }
     }
 
-    public function addToPipeline(): array
+    public function addToPipeline() : array
     {
         return ['$project' => $this->select];
     }
 
-    public function apply(): array
+    public function apply() : array
     {
         return ['projection' => $this->select];
     }

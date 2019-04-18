@@ -4,8 +4,9 @@ namespace FatCode\Tests\Storage;
 
 use FatCode\Storage\Exception\IdentityMapException;
 use FatCode\Storage\Hydration\IdentityMap;
-use FatCode\Storage\Hydration\Instantiator;
 use FatCode\Tests\Storage\Fixtures\User;
+use FatCode\Tests\Storage\Fixtures\UserName;
+use FatCode\Tests\Storage\Fixtures\UserWallet;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -13,7 +14,10 @@ final class IdentityMapTest extends TestCase
 {
     public function testAttach() : void
     {
-        $testInstance = Instantiator::instantiate(User::class);
+        $testInstance = new User(
+            new UserName('John', 'Doe'),
+            new UserWallet('GBP', '10.00')
+        );
         $identityMap = new IdentityMap();
 
         self::assertFalse($identityMap->has('testid'));
@@ -32,7 +36,10 @@ final class IdentityMapTest extends TestCase
 
     public function testDetach() : void
     {
-        $testInstance = Instantiator::instantiate(User::class);
+        $testInstance = new User(
+            new UserName('John', 'Doe'),
+            new UserWallet('GBP', '10.00')
+        );
         $identityMap = new IdentityMap();
         self::assertFalse($identityMap->has('testid'));
         $identityMap->attach($testInstance, 'testid');
@@ -44,7 +51,10 @@ final class IdentityMapTest extends TestCase
 
     public function testClear() : void
     {
-        $testInstance = Instantiator::instantiate(User::class);
+        $testInstance = new User(
+            new UserName('John', 'Doe'),
+            new UserWallet('GBP', '10.00')
+        );
         $identityMap = new IdentityMap();
         $identityMap->attach($testInstance, 'testid');
         $identityMap->clear();

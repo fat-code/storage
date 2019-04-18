@@ -14,7 +14,7 @@ class UpdateDocument implements UpdateOperation
         $this->document = $document;
     }
 
-    public function apply(): array
+    public function apply() : array
     {
         return $this->document;
     }

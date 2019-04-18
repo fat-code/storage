@@ -6,7 +6,7 @@ use Iterator;
 
 interface Cursor extends Iterator
 {
-    public function getConnection(): Connection;
-    public function close(): void;
-    public function isClosed(): bool;
+    public function getConnection() : Connection;
+    public function close() : void;
+    public function isClosed() : bool;
 }

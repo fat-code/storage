@@ -8,25 +8,25 @@ interface Repository
      * @param mixed $id
      * @return object
      */
-    public function get($id): object;
+    public function get($id) : object;
 
     /**
      * @param object ...$entity
      * @return object
      */
-    public function create(object ...$entity): object;
+    public function create(object ...$entity) : object;
 
     /**
      * @param object ...$entity
      * @return object
      */
-    public function remove(object ...$entity): object;
+    public function remove(object ...$entity) : object;
 
     /**
      * @param object ...$entity
      * @return object
      */
-    public function update(object ...$entity): object;
+    public function update(object ...$entity) : object;
 
     /**
      * @return string

@@ -52,7 +52,7 @@ class MongoCursor implements Cursor
         $this->createIterator();
     }
 
-    private function createIterator(): void
+    private function createIterator() : void
     {
         $this->cursorIterator = new IteratorIterator($this->baseCursor);
         $this->cursorIterator->rewind();
@@ -61,17 +61,17 @@ class MongoCursor implements Cursor
         }
     }
 
-    public function getId(): string
+    public function getId() : string
     {
         return (string) $this->baseCursor->getId();
     }
 
-    public function getCommand(): Command
+    public function getCommand() : Command
     {
         return $this->command;
     }
 
-    public function getConnection(): Connection
+    public function getConnection() : Connection
     {
         return $this->connection;
     }
@@ -103,28 +103,28 @@ class MongoCursor implements Cursor
         return $this->current;
     }
 
-    public function next(): void
+    public function next() : void
     {
         $this->cursorIterator->next();
         $this->current = $this->fetch();
     }
 
-    public function key(): int
+    public function key() : int
     {
         return $this->cursorIterator->key();
     }
 
-    public function valid(): bool
+    public function valid() : bool
     {
         return $this->cursorIterator->valid();
     }
 
-    public function rewind(): void
+    public function rewind() : void
     {
         $this->cursorIterator->rewind();
     }
 
-    public function toArray(): array
+    public function toArray() : array
     {
         $result = iterator_to_array($this);
         $this->close();
@@ -132,12 +132,12 @@ class MongoCursor implements Cursor
         return $result;
     }
 
-    public function isClosed(): bool
+    public function isClosed() : bool
     {
         return $this->baseCursor === null;
     }
 
-    public function close(): void
+    public function close() : void
     {
         $this->current = null;
         if ($this->baseCursor) {

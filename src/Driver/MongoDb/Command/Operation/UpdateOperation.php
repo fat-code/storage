@@ -4,5 +4,5 @@ namespace FatCode\Storage\Driver\MongoDb\Command\Operation;
 
 interface UpdateOperation
 {
-    public function apply(): array;
+    public function apply() : array;
 }

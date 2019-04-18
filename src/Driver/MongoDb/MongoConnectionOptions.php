@@ -59,34 +59,30 @@ final class MongoConnectionOptions implements ConnectionOptions
     /** @var resource */
     private $sslContext;
 
-    /** @var string */
-    private $name;
-
     public function __construct(string $database, string $username = null, string $password = null)
     {
         $this->username = $username;
         $this->password = $password;
         $this->database = $database;
         $this->readPreference = new MongoDB\Driver\ReadPreference(MongoDB\Driver\ReadPreference::RP_PRIMARY);
-        $this->name = 'default mongo connection';
     }
 
-    public function setReadConcern(MongoDB\Driver\ReadConcern $concern): void
+    public function setReadConcern(MongoDB\Driver\ReadConcern $concern) : void
     {
         $this->readConcern = $concern;
     }
 
-    public function setWriteConcern(MongoDB\Driver\WriteConcern $concern): void
+    public function setWriteConcern(MongoDB\Driver\WriteConcern $concern) : void
     {
         $this->writeConcern = $concern;
     }
 
-    public function setReadPreference(MongoDB\Driver\ReadPreference $preference): void
+    public function setReadPreference(MongoDB\Driver\ReadPreference $preference) : void
     {
         $this->readPreference = $preference;
     }
 
-    public function setAppName(string $appName): void
+    public function setAppName(string $appName) : void
     {
         $this->appName = $appName;
     }
@@ -97,28 +93,28 @@ final class MongoConnectionOptions implements ConnectionOptions
      * @param array $options
      * @see https://github.com/mongodb/specifications/blob/master/source/auth/auth.rst#auth-related-options
      */
-    public function setAuth(string $mechanism, array $options = []): void
+    public function setAuth(string $mechanism, array $options = []) : void
     {
         $this->authMechanism = $mechanism;
         $this->authOptions = $options;
     }
 
-    public function setConnectionTimeout(int $milliseconds): void
+    public function setConnectionTimeout(int $milliseconds) : void
     {
         $this->connectTimeout = $milliseconds;
     }
 
-    public function setSocketTimeout(int $milliseconds): void
+    public function setSocketTimeout(int $milliseconds) : void
     {
         $this->socketTimeout = $milliseconds;
     }
 
-    public function setReplicaSet(string $name): void
+    public function setReplicaSet(string $name) : void
     {
         $this->replicaSet = $name;
     }
 
-    public function useSSL(string $pemFile, string $pemPassword = null, array $context = null): void
+    public function useSSL(string $pemFile, string $pemPassword = null, array $context = null) : void
     {
         if ($context !== null) {
             $this->sslContext = stream_context_create([
@@ -130,7 +126,7 @@ final class MongoConnectionOptions implements ConnectionOptions
         $this->sslPemPassword = $pemPassword;
     }
 
-    public function getURIOptions(): array
+    public function getURIOptions() : array
     {
         $options = [];
         if ($this->username !== null) {
@@ -178,7 +174,7 @@ final class MongoConnectionOptions implements ConnectionOptions
         return $options;
     }
 
-    public function getDriverOptions(): array
+    public function getDriverOptions() : array
     {
         if (!$this->sslPemFile) {
             return [];
@@ -198,7 +194,7 @@ final class MongoConnectionOptions implements ConnectionOptions
         return $options;
     }
 
-    public function getDatabase(): string
+    public function getDatabase() : string
     {
         return $this->database;
     }

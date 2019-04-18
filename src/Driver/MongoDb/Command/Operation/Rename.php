@@ -16,7 +16,7 @@ class Rename implements UpdateOperation
         $this->value = $newName;
     }
 
-    public function apply(): array
+    public function apply() : array
     {
         return [
             '$rename' => [

@@ -14,7 +14,7 @@ class Pop implements UpdateOperation
         $this->field = $field;
     }
 
-    public function apply(): array
+    public function apply() : array
     {
         return [
             '$pop' => [

@@ -4,5 +4,5 @@ namespace FatCode\Storage\Driver;
 
 interface Command
 {
-    public function execute(callable $handler, Connection $connection): void;
+    public function execute(callable $handler, Connection $connection) : void;
 }

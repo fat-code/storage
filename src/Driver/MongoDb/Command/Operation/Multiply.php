@@ -2,9 +2,10 @@
 
 namespace FatCode\Storage\Driver\MongoDb\Command\Operation;
 
+use FatCode\Storage\Exception\DriverException;
+
 use function is_float;
 use function is_int;
-use FatCode\Storage\Exception\DriverException;
 
 /**
  * Delete operator deletes the specified field
@@ -30,7 +31,7 @@ class Multiply implements UpdateOperation
         $this->value = $value;
     }
 
-    public function apply(): array
+    public function apply() : array
     {
         return [
             '$mul' => [

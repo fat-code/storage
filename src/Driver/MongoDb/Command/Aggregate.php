@@ -23,12 +23,12 @@ final class Aggregate extends MongoCommand
         $this->pipeline = $pipeline;
     }
 
-    public function setCollation(Collation $collation): void
+    public function setCollation(Collation $collation) : void
     {
         $this->collation = $collation;
     }
 
-    public function execute(callable $handler, Connection $connection): void
+    public function execute(callable $handler, Connection $connection) : void
     {
         $command = [
             'aggregate' => $this->collection,

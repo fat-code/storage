@@ -13,7 +13,7 @@ class Limit implements FindOperation, PipelineOperation
         $this->offset = $offset;
     }
 
-    public function addToPipeline(): array
+    public function addToPipeline() : array
     {
         if ($this->offset !== null) {
             return ['$limit' => $this->limit, '$skip' => $this->offset];
@@ -22,7 +22,7 @@ class Limit implements FindOperation, PipelineOperation
         return ['$limit' => $this->limit];
     }
 
-    public function apply(): array
+    public function apply() : array
     {
         if ($this->offset !== null) {
             return ['limit' => $this->limit, 'skip' => $this->offset];
