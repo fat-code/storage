@@ -16,12 +16,12 @@ class Join implements FindOperation, PipelineOperation
         ];
     }
 
-    public function addToPipeline(): array
+    public function addToPipeline() : array
     {
         return ['$lookup' => $this->join];
     }
 
-    public function apply(): array
+    public function apply() : array
     {
         return [];
     }

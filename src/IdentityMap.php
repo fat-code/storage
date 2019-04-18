@@ -13,34 +13,34 @@ final class IdentityMap
         $this->objects = [];
     }
 
-    public function attach(object $object, $id): void
+    public function attach(object $object, $id) : void
     {
         $this->objects[(string) $id] = $object;
     }
 
-    public function detach($id): void
+    public function detach($id) : void
     {
         if ($this->has($id)) {
             unset($this->objects[(string)$id]);
         }
     }
 
-    public function clear(): void
+    public function clear() : void
     {
         $this->objects = [];
     }
 
-    public function isEmpty(): bool
+    public function isEmpty() : bool
     {
         return empty($this->objects);
     }
 
-    public function has($id): bool
+    public function has($id) : bool
     {
         return isset($this->objects[(string) $id]);
     }
 
-    public function get($id): object
+    public function get($id) : object
     {
         if (!$this->has($id)) {
             throw IdentityMapException::forMissingObject($id);

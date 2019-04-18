@@ -4,5 +4,5 @@ namespace FatCode\Storage\Driver\MongoDb\Command\Operation;
 
 interface PipelineOperation
 {
-    public function addToPipeline(): array;
+    public function addToPipeline() : array;
 }

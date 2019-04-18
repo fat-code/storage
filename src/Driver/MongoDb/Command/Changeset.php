@@ -4,6 +4,7 @@ namespace FatCode\Storage\Driver\MongoDb\Command;
 
 use FatCode\Storage\Driver\MongoDb\Command\Operation\UpdateOperation;
 use stdClass;
+
 use function array_merge_recursive;
 
 class Changeset

@@ -95,12 +95,12 @@ final class MongoConnection implements Connection
         }
     }
 
-    public function getOptions(): ConnectionOptions
+    public function getOptions() : ConnectionOptions
     {
         return $this->options;
     }
 
-    public function connect(): void
+    public function connect() : void
     {
         $this->handler = new MongoDB\Driver\Manager(
             'mongodb://' . $this->host . '/' . $this->options->getDatabase(),
@@ -141,7 +141,7 @@ final class MongoConnection implements Connection
         return $collections;
     }
 
-    public function isConnected(): bool
+    public function isConnected() : bool
     {
         return $this->handler !== null;
     }

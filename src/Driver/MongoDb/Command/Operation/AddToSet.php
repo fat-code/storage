@@ -17,7 +17,7 @@ class AddToSet implements UpdateOperation
         $this->values = $values;
     }
 
-    public function apply(): array
+    public function apply() : array
     {
 
         if (count($this->values) > 1) {

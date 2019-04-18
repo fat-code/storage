@@ -14,7 +14,7 @@ class UnsetField implements UpdateOperation
         $this->fields = $fields;
     }
 
-    public function apply(): array
+    public function apply() : array
     {
         $delete = [];
         foreach ($this->fields as $field) {

@@ -28,12 +28,12 @@ class Sort implements FindOperation, PipelineOperation
         }
     }
 
-    public function addToPipeline(): array
+    public function addToPipeline() : array
     {
         return ['$sort' => $this->sort];
     }
 
-    public function apply(): array
+    public function apply() : array
     {
         return ['sort' => $this->sort];
     }

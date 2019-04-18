@@ -11,7 +11,7 @@ class Match implements PipelineOperation
         $this->query = $query;
     }
 
-    public function addToPipeline(): array
+    public function addToPipeline() : array
     {
         return ['$match' => $this->query];
     }

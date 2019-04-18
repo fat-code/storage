@@ -17,7 +17,7 @@ class ConstrainMaximum implements UpdateOperation
         $this->value = $value;
     }
 
-    public function apply(): array
+    public function apply() : array
     {
         return [
             '$min' => [
